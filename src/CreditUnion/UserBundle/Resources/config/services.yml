@@ -1,0 +1,6 @@
+services:            
+    fos_user.profile.form.type:
+        class: CreditUnion\UserBundle\Form\Type\ProfileFormType
+        arguments: [%fos_user.model.user.class%]
+        tags:
+            - {name: form.type, alias: fos_user_profile}

@@ -1,0 +1,43 @@
+{% extends 'CreditUnionBackendBundle::layout.html.twig' %}
+
+{% block body -%}
+<div class="row">
+    <div class="col-lg-12">
+        <h1>User edit</h1>
+        <ol class="breadcrumb">
+            <li><a href="{{path('cr_backend_admin_index')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="{{path('cr_backend_user_index')}}"><i class="fa fa-dashboard"></i> User list</a></li>
+            <li class="active"><i class="fa fa-user"></i> Reset password</li>
+        </ol>
+    </div>
+</div><!-- /.row -->
+<a class="btn btn-default pull-right" href="{{ path('cr_backend_user_index') }}">
+    Back to the list
+</a>
+
+<div class="row">
+    <div class="col-lg-6">
+        {% for flashMessage in app.session.flashbag.get('fos_user_success') %} 
+            <div class="alert alert-success"> 
+               {{ flashMessage }} 
+            </div> 
+        {% endfor  %} 
+        <form role="form" method="POST" action="{{path('cr_backend_user_resetpw', {id: entity.getId()}) }}">
+            {{ form_errors(edit_form) }}
+            <div class="form-group">
+                <label>Username</label>
+                <div class="well well-sm">{{edit_form.vars.value.username}}</div>
+            </div>
+            {% for passwordField in edit_form.plain_password %}
+                <div class="form-group">
+                    {{ form_label(passwordField, null, { 'attr': {'class': 'form-label'}} ) }}
+                    {{ form_errors(passwordField) }}
+                    {{ form_widget(passwordField, { 'attr': {'class': 'form-control', 'placeholder': 'Password', 'autocomplete': 'off' } }) }}
+                </div>
+            {% endfor %}
+            {{ form_widget(edit_form._token) }}
+            <button type="submit" class="btn btn-primary">Reset</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

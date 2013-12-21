@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        <div id="wrapper">
+            {% block nav_bar %}
+                <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="{{path('cr_backend_admin_index')}}">Project name</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse navbar-ex1-collapse">
+                        <ul class="nav navbar-nav side-nav">
+                            <li><a href="{{path('cr_backend_admin_index')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                            <li><a href="{{path('cr_backend_user_index')}}"><i class="fa fa-user"></i> User</a></li>
+                            <li><a href="{{path('cr_backend_branch_index')}}"><i class="fa fa-sitemap"></i> Branch</a></li>
+                        </ul>
+
+                        <ul class="nav navbar-nav navbar-right navbar-user">
+                            <li class="dropdown user-dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ app.user.username }} <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-power-off"></i> Log Out</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </nav>
+            {% endblock %}
+            <div id="page-wrapper">
+                {% block body %}{% endblock %}
+            </div>
+        </div><!-- /#wrapper -->
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

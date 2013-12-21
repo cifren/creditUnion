@@ -1,0 +1,45 @@
+{% extends 'CreditUnionBackendBundle::layout.html.twig' %}
+
+{% block body -%}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1>User creation</h1>
+        <ol class="breadcrumb">
+            <li><a href="{{path('cr_backend_admin_index')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="{{path('cr_backend_user_index')}}"><i class="fa fa-dashboard"></i> User list</a></li>
+            <li class="active"><i class="fa fa-user"></i> User creation</li>
+        </ol>
+    </div>
+</div><!-- /.row -->
+<a class="btn btn-default pull-right" href="{{ path('cr_backend_user_index') }}">
+    Back to the list
+</a>
+
+<div class="row">
+    <div class="col-lg-6">
+        {% for flashMessage in app.session.flashbag.get('fos_user_success') %} 
+            <div class="alert alert-success"> 
+               {{ flashMessage }} 
+            </div> 
+        {% endfor  %} 
+        <form role="form" method="POST" action="{{path('cr_backend_user_create') }}">
+            {{ form_errors(form) }}
+            <div class="form-group">
+                <label>Username</label>
+                {{ form_errors(form.username) }}
+                {{form_widget(form.username, { 'attr': {'class': 'form-control'}} ) }}
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                {{ form_errors(form.email) }}
+                {{form_widget(form.email, { 'attr': {'class': 'form-control'}} ) }}
+            </div>
+            
+            {{ form_widget(form.plain_password) }}
+            {{ form_widget(form._token) }}
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

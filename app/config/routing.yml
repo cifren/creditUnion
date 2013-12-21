@@ -1,0 +1,12 @@
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"  
+     
+cr_frontend:
+    resource: "@CreditUnionFrontendBundle/Resources/config/routing.yml"
+    
+cr_user:    
+    resource: "@CreditUnionUserBundle/Resources/config/routing.yml"
+    
+cr_backend:
+    resource: "@CreditUnionBackendBundle/Resources/config/routing.yml"
+    prefix:   /admin

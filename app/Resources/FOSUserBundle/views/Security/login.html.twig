@@ -1,0 +1,31 @@
+{% extends "::base.html.twig" %}
+
+{% block stylesheets %}
+    {{parent()}}
+    {% stylesheets  
+        '@CreditUnionBackendBundle/Resources/public/css/signIn.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets  %}
+{% endblock %}
+        
+{% block body %}
+    {% if error %}
+        <div class="alert alert-danger">{{ error|trans({}, 'FOSUserBundle') }}</div>
+    {% endif %}
+
+    <div class="container">
+        <form action="{{ path("fos_user_security_check") }}" method="post" class="form-signin">
+            <h2 class="form-signin-heading">Please sign in</h2>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+            <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" autofocus="" placeholder="Name" class="form-control"/>
+
+            <input type="password" id="password" name="_password" required="required" placeholder="Password" class="form-control"/>
+
+            <label for="remember_me">Remember me</label>
+
+            <button type="submit" id="_submit" name="_submit"  class="btn btn-lg btn-primary btn-block"/>Sign in</button>
+        </form>
+    </div>
+{% endblock %}

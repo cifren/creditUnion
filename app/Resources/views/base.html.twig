@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            {% stylesheets  
+                'bootstrap/css/frontend/bootstrap.min.css'
+                'css/style.css'
+            %}
+                <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets  %}
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block nav_bar %}
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="{{ path('cr_frontend_client_search') }}" class="navbar-brand">Project name</a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            <li><p class="navbar-text">Login as {{ app.user.username }}</p></li>
+                            <li><a href="{{ path('cr_backend_admin_index') }}">Admin</a></li>
+                            <li><a href="{{ path('fos_user_profile_edit') }}">Profile</a></li>
+                            <li><a class="btn btn-danger" href="{{ path('fos_user_security_logout') }}">Logout</a></li>
+                        {% else %}
+                            <li><a class="btn btn-primary" href="{{ path('fos_user_security_login') }}">Login</a></li>
+                        {% endif %}
+                    </ul>
+
+
+                </div>
+            </div>
+        {% endblock %}
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

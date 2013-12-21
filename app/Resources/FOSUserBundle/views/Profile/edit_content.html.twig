@@ -1,0 +1,25 @@
+<div class="container top-buffer">
+    <div class="panel panel-default">
+        <div class="panel-heading">Edit for profile</div>
+        <div class="panel-body">
+            {% for flashMessage in app.session.flashbag.get('fos_user_success') %} 
+                <div class="alert alert-success"> 
+                   {{ flashMessage }} 
+               </div> 
+            {% endfor  %}
+            <form action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST">
+                {{ form_errors(form) }}
+                
+                {% for passwordField in form.plain_password %}
+                    <div class="form-group">
+                        {{ form_label(passwordField, null, { 'attr': {'class': 'form-label'} }) }}
+                        {{ form_widget(passwordField, { 'attr': {'class': 'form-control', 'placeholder': 'Password', 'autocomplete': 'off' } }) }}
+                    </div>
+                {% endfor %}
+                {{form_rest(form)}}
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+
+</div>

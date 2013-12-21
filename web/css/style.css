@@ -1,0 +1,20 @@
+body {
+    padding-top: 50px;
+}
+
+.highlight {
+    background-color: #F7F7F9;
+    border: 1px solid #E1E1E8;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    padding: 9px 14px;
+}
+
+.clientDetails{
+    margin-top: 59px;
+}
+
+.top-buffer {margin-top:15px;}
+.top-buffer-small {margin-top:5px;}
+
+#datepicker table th h6 {width: 24px}

@@ -1,0 +1,27 @@
+<div ng-show="display">
+    <h2>Client List</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Account number</th>
+                <th>Pan number</th>
+                <th>Birth date</th>
+                <th>Agency</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="client in clients">
+            {% verbatim %}
+                <td><a href="#/clients/search/{{searchText}}/{{client.clientInfo.id}}">{{client.clientInfo.name}}</a></td>
+                <td>{{client.clientInfo.accountNumber}}</td>
+                <td>{{client.clientInfo.panNumber}}</td>
+                <td>{{client.clientInfo.address}}</td>
+                <td>{{client.branchInfo.name}}</td>
+            {% endverbatim %}
+            </tr>
+        </tbody>
+    </table>
+
+</div>

@@ -1,0 +1,8 @@
+welcome:
+    pattern:  /
+    defaults: { _controller: CreditUnionFrontendBundle:Welcome:index }
+    
+cr_frontend_format:
+    resource: "@CreditUnionFrontendBundle/Controller/ClientController.php"
+    type:     annotation
+    prefix:   /client

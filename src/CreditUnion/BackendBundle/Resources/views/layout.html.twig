@@ -1,0 +1,23 @@
+{% extends "::base_backend.html.twig" %}
+{% block stylesheets %}
+    {% stylesheets  
+        'bootstrap/css/backend/bootstrap.css'
+        'bootstrap/css/backend/sb-admin.css'
+        'bootstrap/css/backend/style.css'
+        'font-awesome/css/font-awesome.min.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets  %}
+{% endblock %}
+{% block javascripts %}
+    {% javascripts  
+        'js/jquery-1.10.2.min.js'
+        'bootstrap/js/bootstrap.min.js'
+    %}
+        <script src="{{ asset_url }}" type="text/javascript"></script>
+    {% endjavascripts  %}
+{% endblock %}
+{% block title 'Admin' %}
+
+{% block body %}
+{% endblock %}

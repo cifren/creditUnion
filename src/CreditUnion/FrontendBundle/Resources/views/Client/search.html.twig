@@ -1,0 +1,118 @@
+{% extends "CreditUnionFrontendBundle::layout.html.twig" %}
+
+{% block title "Client list" %}
+
+{% block stylesheets %}
+    {{parent()}}
+    {% stylesheets  
+        'font-awesome/css/font-awesome.css'
+    %}
+<link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets  %}
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    {% javascripts
+        'js/jquery-1.10.2.min.js'
+        'bootstrap/js/bootstrap.min.js'
+        'angular/angular.js'
+        'angular/ui-bootstrap-tpls-0.6.0-datepicker.js'
+        'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-resource.min.js'
+        '@CreditUnionFrontendBundle/Resources/public/js/search/app.js'
+        '@CreditUnionFrontendBundle/Resources/public/js/search/controller.js'
+    %}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts  %}
+{% endblock %}
+{#
+        
+#}
+
+{% block body %}
+
+<div class="container" ng-app="searchApp">
+    <h1>Search</h1>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a id="tabBasic" href="#basic" data-toggle="tab">Basic</a></li>
+        <li><a id="tabAdvanced" href="#advanced" data-toggle="tab">Advanced</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="basic">
+            <div class="row top-buffer">
+                <div class="col-lg-12">
+                    <div class="well">
+                        <form ng-submit="updateClients()" ng-controller="SearchListCtrl" data-ng-init="init()">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <input class="btn btn-default btn-lg" type="submit" value="search" />
+                                </span>
+                                <input id="searchText" type="text" class="form-control input-lg" placeholder="name / account number / pan number" ng-model="search.query">
+                            </div><!-- /input-group -->
+                        </form>
+                    </div>
+                </div><!-- /.col-lg-12 -->
+            </div><!-- /.row -->
+        </div>
+        
+        <div class="tab-pane" id="advanced">
+            <div class="row top-buffer">
+                <div class="col-lg-12">
+
+                    <form ng-submit="updateAdvancedClients()" ng-controller="SearchListCtrl"> 
+                        <div class="row">
+                            <div class="col-lg-5 well">
+                                <div class="row">
+                                    <label for="clientName" class="col-lg-2 control-label">Name</label> 
+                                    <div class="col-lg-10">
+                                        <input id="name" type="text" class="form-control" placeholder="Name" ng-model="search.name"/>
+                                    </div>
+                                </div>
+                                <div class="row top-buffer-small">
+                                    <label for="dateOfBirth" class="col-lg-2 control-label">Date of birth</label>
+                                    
+                                    <div id="datepicker" class="col-lg-6 input-group">
+                                        <input id="birthDate" class="form-control" type="text" placeholder="Date" is-open="opened" datepicker-popup="yyyy/MM/dd" ng-model="search.birthDate" show-weeks="false"/>
+                                        <span class="input-group-addon" ng-click="open()"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5 well col-md-offset-1">
+                                <div class="row">
+                                    <label for="agency" class="col-lg-2 control-label">Agency</label>
+                                    <div class="col-lg-10">
+                                        <input id="agency" type="text" class="form-control" placeholder="Agency" ng-model="search.agency" />
+                                    </div>
+                                </div>
+                                <div class="row top-buffer-small">
+                                    <label for="panNumber" class="col-lg-2 control-label">Pan number</label>
+                                    <div class="col-lg-10">
+                                        <input id="panNumber" type="text" class="form-control" placeholder="Pan number" ng-model="search.panNumber" />
+                                    </div>
+                                </div>
+                                <div class="row top-buffer-small">
+                                    <label for="accountNumber" class="col-lg-2 control-label">Account number</label>
+                                    <div class="col-lg-10">
+                                        <input id="accountNumber" type="text" class="form-control" placeholder="Account number" ng-model="search.accountNumber" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-1 col-md-offset-10">
+                                <input class="btn btn-default btn-lg" type="submit" value="search" />
+                            </div>
+                        </div>
+                    </form>
+                </div><!-- /.col-lg-12 -->
+            </div><!-- /.row -->
+        </div>
+
+    </div>
+
+    <div ng-view></div>
+
+
+</div>
+{% endblock %}

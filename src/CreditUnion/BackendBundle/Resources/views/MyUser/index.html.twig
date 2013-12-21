@@ -1,0 +1,60 @@
+{% extends 'CreditUnionBackendBundle::layout.html.twig' %}
+
+{% block body -%}
+<div class="row">
+    <div class="col-lg-12">
+        <h1>Users list</h1>
+        <ol class="breadcrumb">
+            <li><i class="fa fa-dashboard"></i> Dashboard</li>
+            <li class="active"><i class="fa fa-table"></i> User List</li>
+        </ol>
+    </div>
+</div><!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-6">
+        {% for flashMessage in app.session.flashbag.get('fos_user_success') %} 
+            <div class="alert alert-success"> 
+               {{ flashMessage }} 
+           </div> 
+        {% endfor  %}
+    </div>
+</div><!-- /.row -->
+<table class="table table-hover table-striped tablesorter">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Enabled</th>
+            <th>Last login</th>
+            <th>Locked</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entity in entities %}
+        <tr>
+            <td><a href="{{ path('cr_backend_user_show', { 'id': entity.id }) }}">{{ entity.username }}</a></td>
+            <td>{{ entity.email }}</td>
+            <td>{{ entity.enabled }}</td>
+            <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{{ entity.locked }}</td>
+            <td>{{ entity.getRolesImplode() }}</td>
+            <td>
+
+                <a class="btn btn-primary" href="{{ path('cr_backend_user_show', { 'id': entity.id }) }}">Show</a>
+                <a class="btn btn-primary" href="{{ path('cr_backend_user_edit', { 'id': entity.id }) }}">Edit</a>
+                <a class="btn btn-primary" href="{{ path('cr_backend_user_resetpw', { 'id': entity.id }) }}">Reset password</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-lg-12">
+        <a class="btn btn-primary" href="{{ path('cr_backend_user_new') }}">Create a new entry</a>
+    </div>
+</div>
+{% endblock %}
