@@ -18,16 +18,13 @@
         'bootstrap/js/bootstrap.min.js'
         'angular/angular.js'
         'angular/ui-bootstrap-tpls-0.6.0-datepicker.js'
-        'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-resource.min.js'
+        'angular/angular-resource.min.js'
         '@CreditUnionFrontendBundle/Resources/public/js/search/app.js'
         '@CreditUnionFrontendBundle/Resources/public/js/search/controller.js'
     %}
 <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts  %}
 {% endblock %}
-{#
-        
-#}
 
 {% block body %}
 
@@ -80,9 +77,9 @@
 
                             <div class="col-lg-5 well col-md-offset-1">
                                 <div class="row">
-                                    <label for="agency" class="col-lg-2 control-label">Agency</label>
+                                    <label for="branch" class="col-lg-2 control-label">Branch</label>
                                     <div class="col-lg-10">
-                                        <input id="agency" type="text" class="form-control" placeholder="Agency" ng-model="search.agency" />
+                                        <input id="branch" type="text" class="form-control" placeholder="Branch" ng-model="search.branch" />
                                     </div>
                                 </div>
                                 <div class="row top-buffer-small">

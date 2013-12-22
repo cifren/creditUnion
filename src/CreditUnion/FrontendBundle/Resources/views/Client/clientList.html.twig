@@ -8,17 +8,17 @@
                 <th>Account number</th>
                 <th>Pan number</th>
                 <th>Birth date</th>
-                <th>Agency</th>
+                <th>Branch</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="client in clients">
             {% verbatim %}
-                <td><a href="#/clients/search/{{searchText}}/{{client.clientInfo.id}}">{{client.clientInfo.name}}</a></td>
-                <td>{{client.clientInfo.accountNumber}}</td>
-                <td>{{client.clientInfo.panNumber}}</td>
-                <td>{{client.clientInfo.address}}</td>
-                <td>{{client.branchInfo.name}}</td>
+                <td><a href="#/{{searchType}}/clientDetail/{{client.id}}/{{search.query}}">{{client.name}}</a></td>
+                <td>{{client.accountNumber}}</td>
+                <td>{{client.panNumber}}</td>
+                <td>{{client.address}}</td>
+                <td>{{client.branch.name}}</td>
             {% endverbatim %}
             </tr>
         </tbody>

@@ -15,8 +15,7 @@ class ClientController extends Controller {
      * @Route("/", name="cr_frontend_client_search")
      * @Template()
      */
-    public function searchAction()
-    {
+    public function searchAction() {
         return array();
     }
 
@@ -25,11 +24,12 @@ class ClientController extends Controller {
      * 
      * @Route("/basicSearch/{searchText}", name="cr_frontend_client_list", defaults={"searchText"=null})
      */
-    public function listAction($searchText)
-    {
+    public function listAction($searchText) {
         $clients = array();
         if ($searchText) {
             $clients = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Client')->createQueryBuilder('c')
+                    ->select('c, b')
+                    ->innerJoin('c.branch', 'b')
                     ->where('c.name LIKE :searchText')
                     ->orWhere('c.accountNumber LIKE :searchText')
                     ->orWhere('c.panNumber LIKE :searchText')
@@ -49,12 +49,11 @@ class ClientController extends Controller {
      * 
      * @Route("/advancedSearch", name="cr_frontend_client_list_adv")
      */
-    public function listAdvAction()
-    {
+    public function listAdvAction() {
         $clientsQb = $this->getDoctrine()
                 ->getRepository('CreditUnionFrontendBundle:Client')
                 ->createQueryBuilder('c')
-                ->select('c as clientInfo, b as agencyInfo')
+                ->select('c, b')
                 ->innerJoin('c.branch', 'b');
         if ($this->getRequest()->get('name')) {
             $clientsQb->andWhere('c.name LIKE :name')->setParameter('name', '%' . $this->getRequest()->get('name') . '%');
@@ -68,8 +67,8 @@ class ClientController extends Controller {
         if ($this->getRequest()->get('accountNumber')) {
             $clientsQb->andWhere('c.accountNumber LIKE :accountNumber')->setParameter('accountNumber', '%' . $this->getRequest()->get('accountNumber') . '%');
         }
-        if ($this->getRequest()->get('agency')) {
-            $clientsQb->andWhere('b.name LIKE :agency')->setParameter('agency', '%' . $this->getRequest()->get('agency') . '%');
+        if ($this->getRequest()->get('branch')) {
+            $clientsQb->andWhere('b.name LIKE :branch')->setParameter('branch', '%' . $this->getRequest()->get('branch') . '%');
         }
         $clients = $clientsQb
                 ->setMaxResults(20)
@@ -86,13 +85,15 @@ class ClientController extends Controller {
      * 
      * @Route("/getClient/{clientId}", name="cr_frontend_client_getclient")
      */
-    public function getClientAction($clientId)
-    {
+    public function getClientAction($clientId) {
         $client = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Client')->createQueryBuilder('c')
+                ->select('c, b')
+                ->innerJoin('c.branch', 'b')
                 ->where('c.id = :id')
                 ->setParameter('id', $clientId)
                 ->getQuery()
                 ->getSingleResult(Query::HYDRATE_ARRAY);
+        //die(var_dump($client));
         $client['birthDate'] = \date_format($client['birthDate'], 'Y-m-d');
         $response = new Response(json_encode($client));
         $response->headers->set('Content-Type', 'application/json');
@@ -104,14 +105,12 @@ class ClientController extends Controller {
      * @Route("/template/{templateName}", name="cr_frontend_client_template")
      * 
      */
-    public function templateAction($templateName)
-    {
+    public function templateAction($templateName) {
 
         return $this->render('CreditUnionFrontendBundle:Client:' . $templateName);
     }
 
-    function validateDate($date, $format = 'Y-m-d')
-    {
+    function validateDate($date, $format = 'Y-m-d') {
         $d = \DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
     }

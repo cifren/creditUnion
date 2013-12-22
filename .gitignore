@@ -1,0 +1,7 @@
+/app/logs/
+/vendor/
+/web/bundles/
+/app/cache/
+/composer.lock
+/app/bootstrap.php.cache
+/app/config/parameters.yml

@@ -113,7 +113,8 @@ class ImportFormatController extends Controller
     protected function createImportColumnNames(ImportFormat $entity, array $importColumnNames)
     {
         $newImportCN = array();
-        if (!empty($entity->getMatchField())) {
+        $matchField = $entity->getMatchField();
+        if (!empty($matchField)) {
             foreach ($entity->getMatchField() as $matchField) {
                 $newImportCN[$matchField] = $importColumnNames[$matchField];
                 $newImportCN[$matchField]['enabled'] = true;
