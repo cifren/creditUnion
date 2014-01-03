@@ -20,6 +20,21 @@ class ImportFormatController extends Controller
 {
 
     /**
+     * Displays the log of a import format
+     *
+     * @Route("/displayLog/{id}", name="cr_backend_importformat_displaylog")
+     * @Method("GET")
+     * @Template()
+     */
+    public function displayLogAction($id)
+    {
+        $importFormat = $this->getDoctrine()->getEntityManager()->getRepository('CreditUnionBackendBundle:ImportFormat')->find($id);
+        return array(
+            'importFormat' => $importFormat
+        );
+    }
+
+    /**
      * Displays a form to create/edit an existing Importformat entity.
      *
      * @Route("/create/{branchId}", name="cr_backend_importformat_create")
@@ -91,7 +106,7 @@ class ImportFormatController extends Controller
     {
         $format = $request->get('format');
         $sortFormat = array();
-        
+
         if (!empty($format)) {
             foreach ($format as $key => $column) {
                 if (isset($column['enabled'])) {

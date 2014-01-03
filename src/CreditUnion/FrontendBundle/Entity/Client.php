@@ -37,12 +37,12 @@ class Client
     protected $name;
 
     /**
-     * @ORM\Column(type="bigint", nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     protected $accountNumber;
 
     /**
-     * @ORM\Column(type="bigint", nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     protected $panNumber;
 

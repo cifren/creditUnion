@@ -50,8 +50,9 @@
                             {% else %}
                                {{ path('cr_backend_importformat_create', { 'branchId': entity.getId() }) }}">New format</a>
                             {% endif %}
-                            
-                            
+                            {% if(entity.importFormat) %}
+                                <a class="btn btn-primary" href="{{ path('cr_backend_importformat_displaylog', { 'id': entity.getImportFormat().id }) }}">Log</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

@@ -17,6 +17,7 @@ class ImportCommand extends ContainerAwareCommand
     protected $output;
     protected $em;
     protected $timestart;
+    protected $log;
 
     protected function configure()
     {
@@ -38,6 +39,7 @@ class ImportCommand extends ContainerAwareCommand
             $this->log('--------- Branch name : ' . $branch->getName() . ' ---------');
             if ($branch->getImportFormat()) {
                 $this->importClient($branch->getImportFormat());
+                $this->saveLog($branch->getImportFormat());
             } else {
                 $this->log('No import');
             }
@@ -50,6 +52,8 @@ class ImportCommand extends ContainerAwareCommand
 
     protected function importClient(ImportFormat $importFormat)
     {
+        $this->clearLog();
+        $this->log(date('Y-m-d h:i:s'));
         if (!$importFormat->getEnabled()) {
             $this->log('--> This import is disabled');
             return true;
@@ -141,7 +145,7 @@ class ImportCommand extends ContainerAwareCommand
     {
         if ($type == 'date') {
             $value = \DateTime::createFromFormat($importFormat->getDateFormat(), $value);
-            if($value == false){
+            if ($value == false) {
                 $value = null;
             }
         }
@@ -151,6 +155,18 @@ class ImportCommand extends ContainerAwareCommand
     protected function log($message)
     {
         $this->output->writeln($message);
+        $this->log .= '<br>' . $message;
+    }
+
+    protected function clearLog()
+    {
+        $this->log = null;
+    }
+
+    protected function saveLog($importFormat)
+    {
+        $importFormat->setLog($this->log);
+        $this->em->flush();
     }
 
 }

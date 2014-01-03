@@ -5,8 +5,8 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Account number</th>
                 <th>Pan number</th>
+                <th>Account number</th>
                 <th>Birth date</th>
                 <th>Branch</th>
             </tr>
@@ -14,9 +14,9 @@
         <tbody>
             <tr ng-repeat="client in clients">
             {% verbatim %}
-                <td><a href="#/{{searchType}}/clientDetail/{{client.id}}/{{search.query}}">{{client.name}}</a></td>
-                <td>{{client.accountNumber}}</td>
+                <td><a href="#/{{searchType}}/clientDetail/{{client.id}}/{{parentQuery}}">{{client.name}}</a></td>
                 <td>{{client.panNumber}}</td>
+                <td>{{client.accountNumber}}</td>
                 <td>{{client.address}}</td>
                 <td>{{client.branch.name}}</td>
             {% endverbatim %}

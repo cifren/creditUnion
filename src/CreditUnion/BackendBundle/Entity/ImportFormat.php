@@ -56,6 +56,11 @@ class ImportFormat
     protected $matchField;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    protected $log;
+
+    /**
      * @ORM\OneToOne(targetEntity="CreditUnion\FrontendBundle\Entity\Branch", inversedBy="importFormat")
      * @ORM\JoinColumn(name="branch_id", referencedColumnName="id", nullable=false)
      */
@@ -140,7 +145,7 @@ class ImportFormat
     {
         $this->branch = $branch;
     }
-    
+
     public function getDateFormat()
     {
         return $this->dateFormat;
@@ -151,5 +156,14 @@ class ImportFormat
         $this->dateFormat = $dateFormat;
     }
 
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    public function setLog($log)
+    {
+        $this->log = $log;
+    }
 
 }
