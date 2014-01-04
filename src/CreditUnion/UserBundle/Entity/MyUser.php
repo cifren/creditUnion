@@ -6,10 +6,10 @@ use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CreditUnion\UserBundle\Entity\User
+ * CreditUnion\UserBundle\Entity\MyUser
  * 
  * @ORM\Entity
- * @ORM\Table(name="user")
+ * @ORM\Table(name="fos_user")
  */
 class MyUser extends BaseUser
 {
@@ -20,12 +20,34 @@ class MyUser extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-    
-    public function getRolesImplode(){
-        if(!empty($this->roles)){
-            return implode(', ', $this->roles);
-        }else { 
-            return '';
-        }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="MyGroup", inversedBy="users")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
+     */
+    protected $group;
+
+    public function getGroup()
+    {
+        return $this->group;
     }
+
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    public function getRoles()
+    {
+        $roles = $this->roles;
+
+        if ($this->group)
+            $roles = array_merge($roles, $this->group->getRoles());
+
+        // we need to make sure to have at least one role
+        $roles[] = static::ROLE_DEFAULT;
+
+        return array_unique($roles);
+    }
+
 }

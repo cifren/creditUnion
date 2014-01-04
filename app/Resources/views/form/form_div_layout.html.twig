@@ -85,3 +85,32 @@
 {% endspaceless %}
 {% endblock form_errors %}
     
+{% block collection_widget_row %}
+{% spaceless %}
+    <div class="collection-row">
+        {% if allow_delete %}
+            <a href="#" class="btn btn-default collection-delete pull-left"><i class="fa fa-trash-o text-danger"> </i></a>
+        {% endif %}
+        {{ form_row(child) }}
+    </div>
+{% endspaceless %}
+{% endblock %}
+    
+{% block collection_widget %}
+{% spaceless %}
+    {% if prototype is defined %}
+        {% set child = prototype %}
+        {% set attr = attr|merge({'data-prototype': block('collection_widget_row') }) %}
+    {% endif %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        {% for child in form %}
+            {{ block('collection_widget_row') }}
+        {% endfor %}
+        {{ form_rest(form) }}
+        {% if allow_add %}
+            <div><a href="#" class="btn btn-default collection-add"><i class="fa fa-plus text-success"></i></a></div>
+        {% endif %}
+    </div>
+{% endspaceless %}
+{% endblock collection_widget %} 

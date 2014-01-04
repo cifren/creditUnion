@@ -50,7 +50,7 @@ class MyUserController extends Controller
     {
         $entity = new MyUser();
         $entity->setEnabled(true);
-        $form = $this->createForm(new NewMyUserType(), $entity);
+        $form = $this->createForm(new NewMyUserType($this->container->getParameter('security.role_hierarchy.roles')), $entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -80,7 +80,7 @@ class MyUserController extends Controller
         $entity = new MyUser();
         $entity->setPlainPassword('panini36');
         $entity->setEnabled(true);
-        $form = $this->container->get('form.factory')->create(new NewMyUserType($this->container->getParameter('fos_user.model.user.class')), $entity);
+        $form = $this->container->get('form.factory')->create(new NewMyUserType($this->container->getParameter('security.role_hierarchy.roles')), $entity);
 
         return array(
             'entity' => $entity,
@@ -125,12 +125,11 @@ class MyUserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('CreditUnionUserBundle:MyUser')->find($id);
-
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find MyUser entity.');
         }
 
-        $editForm = $this->container->get('form.factory')->create(new MyUserType($this->container->getParameter('fos_user.model.user.class')), $entity);
+        $editForm = $this->container->get('form.factory')->create(new MyUserType($this->container->getParameter('security.role_hierarchy.roles')), $entity);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
@@ -156,11 +155,11 @@ class MyUserController extends Controller
             throw $this->createNotFoundException('Unable to find MyUser entity.');
         }
 
-        $editForm = $this->container->get('form.factory')->create(new ResetpwMyUserType($this->container->getParameter('fos_user.model.user.class')),$entity);
-        
+        $editForm = $this->container->get('form.factory')->create(new ResetpwMyUserType($this->container->getParameter('fos_user.model.user.class')), $entity);
+
         if ($request->getMethod() == 'POST') {
             $editForm->bind($request);
-            
+
             if ($editForm->isValid()) {
                 $this->container->get('fos_user.user_manager')->updateUser($entity);
                 $this->setFlash('fos_user_success', 'Updated');
@@ -172,7 +171,7 @@ class MyUserController extends Controller
             'edit_form' => $editForm->createView(),
         );
     }
-    
+
     /**
      * Edits an existing MyUser entity.
      *
@@ -191,7 +190,7 @@ class MyUserController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
 
-        $editForm = $this->container->get('form.factory')->create(new MyUserType($this->container->getParameter('fos_user.model.user.class')));
+        $editForm = $this->container->get('form.factory')->create(new MyUserType($this->container->getParameter('security.role_hierarchy.roles')));
         $formHandler = new ProfileFormHandler($editForm, $request, $this->container->get('fos_user.user_manager'));
 
         $process = $formHandler->process($entity);

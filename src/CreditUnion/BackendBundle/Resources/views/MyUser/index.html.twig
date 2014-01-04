@@ -28,7 +28,7 @@
             <th>Enabled</th>
             <th>Last login</th>
             <th>Locked</th>
-            <th>Roles</th>
+            <th>Group</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -40,9 +40,8 @@
             <td>{{ entity.enabled }}</td>
             <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
             <td>{{ entity.locked }}</td>
-            <td>{{ entity.getRolesImplode() }}</td>
+            <td>{{ entity.getGroup().getName() }}</td>
             <td>
-
                 <a class="btn btn-primary" href="{{ path('cr_backend_user_show', { 'id': entity.id }) }}">Show</a>
                 <a class="btn btn-primary" href="{{ path('cr_backend_user_edit', { 'id': entity.id }) }}">Edit</a>
                 <a class="btn btn-primary" href="{{ path('cr_backend_user_resetpw', { 'id': entity.id }) }}">Reset password</a>

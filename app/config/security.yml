@@ -3,8 +3,8 @@ security:
         FOS\UserBundle\Model\UserInterface: sha512
 
     role_hierarchy:
+        SIMPLE_USER:      ROLE_USER
         ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
         fos_userbundle:
@@ -25,9 +25,8 @@ security:
         - { path: ^/_wdt, roles: IS_AUTHENTICATED_ANONYMOUSLY }         # allow wdt for debugging
         - { path: ^/_profiler/, role: IS_AUTHENTICATED_ANONYMOUSLY }    # allow profiler for debugging
         - { path: ^/bundles/, role: IS_AUTHENTICATED_ANONYMOUSLY }      # allow assets to be loaded anonymously
-
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: ROLE_USER }
-        - { path: ^/client, role: ROLE_USER } 
+        - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/client, role: ROLE_USER }
