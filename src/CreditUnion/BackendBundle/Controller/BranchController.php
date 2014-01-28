@@ -176,7 +176,7 @@ class BranchController extends Controller
      *
      * @Route("/{id}", name="cr_backend_branch_update")
      * @Method("PUT")
-     * @Template("CreditUnionFrontendBundle:Branch:edit.html.twig")
+     * @Template("CreditUnionBackendBundle:Branch:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
@@ -213,19 +213,23 @@ class BranchController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Branch entity.');
+        }
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Branch entity.');
-            }
-
+        if ($deleteForm->isValid()) {
             $em->remove($entity);
             $em->flush();
+        } else {
+            return $this->render('CreditUnionBackendBundle:Branch:show.html.twig', array(
+                        'entity' => $entity,
+                        'delete_form' => $deleteForm->createView(),
+            ));
         }
 
         return $this->redirect($this->generateUrl('cr_backend_branch_index'));

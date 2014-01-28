@@ -13,6 +13,8 @@
 </div><!-- /.row -->
 <div class="pull-right">
     <form action="{{path('cr_backend_branch_delete', {id: entity.getId()})}}" method="post" style="display:inline-block;margin-left:10px;">
+        {{form_errors(delete_form)}}
+        {{ form_widget(delete_form._token) }}
         <input type="hidden" value="DELETE" name="_method">
         <button class="btn btn-danger" name="form[submit]" id="form_submit" type="submit">Delete</button>
     </form>

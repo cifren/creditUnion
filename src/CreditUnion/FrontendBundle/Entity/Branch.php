@@ -32,7 +32,7 @@ class Branch
     protected $clients;
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditUnion\BackendBundle\Entity\ImportFormat", mappedBy="branch")
+     * @ORM\OneToOne(targetEntity="CreditUnion\BackendBundle\Entity\ImportFormat", mappedBy="branch", cascade={"all"})
      */
     protected $importFormat;
 
