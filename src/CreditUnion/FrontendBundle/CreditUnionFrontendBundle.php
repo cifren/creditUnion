@@ -8,6 +8,6 @@ class CreditUnionFrontendBundle extends Bundle
 {
     public function boot()
     {
-        \Doctrine\DBAL\Types\Type::overrideType('datetime', 'Doctrine\DBAL\Types\Type\VarDateTime');
+        \Doctrine\DBAL\Types\Type::overrideType('datetime', 'Doctrine\DBAL\Types\VarDateTime');
     }
 }
