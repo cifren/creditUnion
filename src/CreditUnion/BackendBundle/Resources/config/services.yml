@@ -1,0 +1,3 @@
+services:
+  SQLServer2005PlatformService:
+    class: Doctrine\DBAL\Platforms\SQLServer2005Platform
