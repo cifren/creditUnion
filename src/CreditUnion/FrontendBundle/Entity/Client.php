@@ -67,7 +67,7 @@ class Client
     protected $postal;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $birthDate;
 
