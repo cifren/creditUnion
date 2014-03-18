@@ -28,7 +28,7 @@ class ImportFormatController extends Controller
      */
     public function displayLogAction($id)
     {
-        $importFormat = $this->getDoctrine()->getEntityManager()->getRepository('CreditUnionBackendBundle:ImportFormat')->find($id);
+        $importFormat = $this->getDoctrine()->getManager()->getRepository('CreditUnionBackendBundle:ImportFormat')->find($id);
         return array(
             'importFormat' => $importFormat
         );

@@ -25,9 +25,10 @@ class AppKernel extends Kernel
             new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
             
             //Website
+            new CreditUnion\UserBundle\CreditUnionUserBundle(),
             new CreditUnion\FrontendBundle\CreditUnionFrontendBundle(),
             new CreditUnion\BackendBundle\CreditUnionBackendBundle(),
-            new CreditUnion\UserBundle\CreditUnionUserBundle(),
+            new CreditUnion\ImportBundle\CreditUnionImportBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

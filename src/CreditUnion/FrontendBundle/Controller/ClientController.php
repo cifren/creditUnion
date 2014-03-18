@@ -98,7 +98,9 @@ class ClientController extends Controller
                 ->getQuery()
                 ->getSingleResult(Query::HYDRATE_ARRAY);
         //die(var_dump($client));
-        $client['birthDate'] = \date_format($client['birthDate'], 'Y-m-d');
+        if($client['birthDate'] ){
+            $client['birthDate'] = \date_format($client['birthDate'], 'Y-m-d');
+        }
         $response = new Response(json_encode($client));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
