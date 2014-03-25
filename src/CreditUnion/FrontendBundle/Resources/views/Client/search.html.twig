@@ -79,7 +79,12 @@
                                 <div class="row">
                                     <label for="branch" class="col-lg-2 control-label">Branch</label>
                                     <div class="col-lg-10">
-                                        <input id="branch" type="text" class="form-control" placeholder="Branch" ng-model="search.branch" />
+                                        <select id="branch" class="form-control" ng-model="search.branch">
+                                            <option value="">Choose your branch</option>
+                                            {% for branch in branches %}
+                                                <option value="{{branch.getId()}}">{{branch.getName()|title}}</option>
+                                            {% endfor %}
+                                        </select> 
                                     </div>
                                 </div>
                                 <div class="row top-buffer-small">

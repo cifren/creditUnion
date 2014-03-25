@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * CreditUnion\FrontendBundle\Entity\branch
  * 
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditUnion\FrontendBundle\Repository\BranchRepository")
  * @ORM\Table(name="branch")
  */
 class Branch

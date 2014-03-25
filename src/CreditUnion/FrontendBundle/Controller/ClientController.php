@@ -18,7 +18,10 @@ class ClientController extends Controller
      */
     public function searchAction()
     {
-        return array();
+        $em = $this->getDoctrine()->getManager();
+        $branches = $em->getRepository('CreditUnionFrontendBundle:Branch')->getBranchesWithClient();
+        
+        return array('branches' => $branches);
     }
 
     /**
@@ -72,7 +75,7 @@ class ClientController extends Controller
             $clientsQb->andWhere('c.accountNumber LIKE :accountNumber')->setParameter('accountNumber', '%' . $this->getRequest()->get('accountNumber') . '%');
         }
         if ($this->getRequest()->get('branch') != '') {
-            $clientsQb->andWhere('b.name LIKE :branch')->setParameter('branch', '%' . $this->getRequest()->get('branch') . '%');
+            $clientsQb->andWhere('b.id = :branch')->setParameter('branch', $this->getRequest()->get('branch'));
         }
         $clients = $clientsQb
                         ->setMaxResults(20)
