@@ -12,8 +12,7 @@ use CreditUnion\FrontendBundle\Entity\Client;
 /**
  * CreditUnion\BackendBundle\Command\ImportClientFromFtpCommand
  */
-class ImportClientFromFtpCommand extends ContainerAwareCommand
-{
+class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
     protected $output;
     protected $em;
@@ -54,7 +53,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->debug = $input->getArgument('debug') == 'true'?true:false;
+        $this->debug = $input->getArgument('debug') == 'true' ? true : false;
         $this->handleError();
 
         $this->output = $output;
@@ -67,12 +66,15 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
 
             $this->log('--------- Branch name : ' . $branch->getName() . ' ---------');
             if ($branch->getImportFormat()) {
-                $this->saveLogRunning($branch->getImportFormat());
+                $this->log('Script running...', $branch->getImportFormat());
+                $this->saveLog($branch->getImportFormat());
+                $this->clearLog();
                 $this->importClient($branch->getImportFormat());
                 $this->saveLog($branch->getImportFormat());
             } else {
                 $this->log('No import');
             }
+
             $this->log('');
         }
         $this->log('****** End import ******');
@@ -82,12 +84,14 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
 
     protected function importClient(ImportFormat $importFormat)
     {
-        try{
-            $this->clearLog();
-            $this->log(date('Y-m-d h:i:s'));
+        try {
+
             if (!$importFormat->getEnabled()) {
+                $this->log(date('Y-m-d h:i:s'));
                 $this->log('--> This import is disabled');
                 return true;
+            } else {
+                $this->log(date('Y-m-d h:i:s'), $importFormat);
             }
             $this->setStartTime();
 
@@ -102,7 +106,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
 
             //look for last file updated
             if (!file_exists($importFormat->getFolder())) {
-                $this->log('-->  Error : Folder ' . $importFormat->getFolder() . ' doesn\'t exist');
+                $this->log('-->  Error : Folder ' . $importFormat->getFolder() . ' doesn\'t exist', $importFormat);
                 return;
             }
 
@@ -117,16 +121,16 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
             //get modified file
             $latestFile = key($files);
             if (empty($latestFile)) {
-                $this->log('--> no file found in folder : ' . $importFormat->getFolder());
+                $this->log('--> no file found in folder : ' . $importFormat->getFolder(), $importFormat);
                 return;
             }
             $idFile = uniqid();
-            $this->log('--> File : ' . $latestFile);
+            $this->log('--> File : ' . $latestFile, $importFormat);
 
             //process the file, need to change name in case of other script launched at the same time
             $today = new \DateTime('now');
             $inProcessFileName = "{$latestFile}.{$idFile}.{$today->format($extensionDateFormat)}.{$extensionInProgress}";
-            rename($latestFile,$inProcessFileName);
+            rename($latestFile, $inProcessFileName);
 
             //adapt in function of type csv or xls
             if ($importFormat->getType() == 'csv') {
@@ -139,7 +143,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
                 $objPHPExcel = \PHPExcel_IOFactory::load($inProcessFileName);
             }
 
-            $this->log('--> Loaded in ' . $this->getFinishTime());
+            $this->log('--> Loaded in ' . $this->getFinishTime(), $importFormat);
             $this->setStartTime();
             $worksheet = $objPHPExcel->getActiveSheet();
             $highestRow = $worksheet->getHighestRow(); // e.g. 10
@@ -148,7 +152,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
             $importFormatColumnNumber = count($importFormat->getMatchField());
 
             if ($importFormatColumnNumber != $highestColumnNumber) {
-                $this->log('--> Error : Number of column in file doesn\'t match the import format created for this store, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns');
+                $this->log('--> Error : Number of column in file doesn\'t match the import format created for this store, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
                 return false;
             }
 
@@ -172,7 +176,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
                 }
                 $client->setBranch($branch);
                 $this->em->persist($client);
-                if($row%100 == 0){
+                if ($row % 100 == 0) {
                     $this->em->flush();
                     $this->em->clear();
                     //renew object for em
@@ -182,20 +186,19 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
             $this->em->flush();
             $this->em->clear();
             $row--;
-            $this->log('--> Finished in ' . $this->getFinishTime());
-            $this->log("--> $row Rows added with success");
+            $this->log('--> Finished in ' . $this->getFinishTime(), $importFormat);
+            $this->log("--> $row Rows added with success", $importFormat);
 
             //create archive folder
-            $archiveFolder = $importFormat->getFolder().'/archive';
-            $this->createArchiveFolder($archiveFolder );
+            $archiveFolder = $importFormat->getFolder() . '/archive';
+            $this->createArchiveFolder($archiveFolder);
 
             //archive folder
             $pathParts = pathinfo($latestFile);
             $archiveFileName = "{$archiveFolder}/{$pathParts['filename']}_{$today->format($extensionDateFormat)}.{$pathParts['extension']}";
             rename($inProcessFileName, $archiveFileName);
-        }
-        catch(Exception $e){
-            $this->log(' --> Error : '.$e->getMessage());
+        } catch (Exception $e) {
+            $this->log(' --> Error : ' . $e->getMessage(), $importFormat);
         }
     }
 
@@ -216,7 +219,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
      */
     protected function setEndTime()
     {
-        $this->endTime= new \DateTime("now");
+        $this->endTime = new \DateTime("now");
     }
 
     /**
@@ -253,10 +256,21 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
         return $value;
     }
 
-    protected function log($message)
+    protected function log($message, $importFormat = null)
     {
         $this->output->writeln($message);
-        $this->log .= '<br>' . $message;
+        if ($importFormat) {
+            $this->log .= '<br>' . $message;
+        }
+    }
+
+    protected function saveLog($importFormat)
+    {
+        $log = $this->log . $importFormat->getLog();
+        $log = $this->limitLog($log);
+        $importFormat = $this->em->getRepository('CreditUnionBackendBundle:ImportFormat')->find($importFormat->getId());
+        $importFormat->setLog($log);
+        $this->em->flush();
     }
 
     protected function clearLog()
@@ -264,18 +278,11 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
         $this->log = null;
     }
 
-    protected function saveLog($importFormat)
+    protected function limitLog($log)
     {
-        $importFormat = $this->em->getRepository('CreditUnionBackendBundle:ImportFormat')->find($importFormat->getId());
-        $importFormat->setLog($this->log);
-        $this->em->flush();
-    }
+        $log = substr($log, 0, 1500);
 
-    protected function saveLogRunning($importFormat)
-    {
-        $importFormat = $this->em->getRepository('CreditUnionBackendBundle:ImportFormat')->find($importFormat->getId());
-        $importFormat->setLog('Script running...');
-        $this->em->flush();
+        return $log;
     }
 
     /**
@@ -284,14 +291,14 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
     protected function cleanFolder($folder, $extensionInProgress, $extensionDateFormat)
     {
         $files = glob($folder . "/*.{$extensionInProgress}", GLOB_BRACE);
-        foreach($files as $file){
+        foreach ($files as $file) {
             $pathParts = pathinfo($file);
             $explodedFileName = explode('.', $pathParts['basename']);
             $explodedFileName = array_reverse($explodedFileName);
 
             $dateFile = date_create_from_format($extensionDateFormat, $explodedFileName[1]);
 
-            if($dateFile->format('Y-m-d') != date('Y-m-d')){
+            if ($dateFile->format('Y-m-d') != date('Y-m-d')) {
                 system("rm $file");
             }
         }
@@ -328,7 +335,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
     public function exception_error_handler($errno, $errstr, $errfile, $errline)
     {
         $e = new \ErrorException($errstr, $errno, 0, $errfile, $errline);
-        $this->log(' --> Error : '.$e->getMessage());
+        $this->log(' --> Error : ' . $e->getMessage());
 
         return true;
     }
@@ -343,8 +350,9 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
             //fatal = type 1
             if ($error['type'] == 1) {
                 $e = new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']);
-                $this->log(' --> Error : '.$e->getMessage());
+                $this->log(' --> Error : ' . $e->getMessage());
             }
         }
     }
+
 }
