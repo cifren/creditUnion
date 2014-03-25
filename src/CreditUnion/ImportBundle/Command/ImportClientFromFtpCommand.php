@@ -71,6 +71,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 $this->clearLog();
                 $this->importClient($branch->getImportFormat());
                 $this->saveLog($branch->getImportFormat());
+                $this->clearLog();
             } else {
                 $this->log('No import');
             }
