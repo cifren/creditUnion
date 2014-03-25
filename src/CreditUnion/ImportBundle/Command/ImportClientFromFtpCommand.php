@@ -95,12 +95,6 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             }
             $this->setStartTime();
 
-            //delete all element for the branch selected
-            $query = $this->em
-                    ->createQuery('DELETE CreditUnionFrontendBundle:Client c WHERE c.branch = :branch')
-                    ->setParameter('branch', $importFormat->getBranch()->getId());
-            $query->execute();
-
             //reload branch because clear()
             $branch = $this->em->getRepository('CreditUnionFrontendBundle:Branch')->find($importFormat->getBranch()->getId());
 
@@ -155,6 +149,9 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 $this->log('--> Error : Number of column in file doesn\'t match the import format created for this store, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
                 return false;
             }
+            
+            //delete list of client from the same branch and replace by new one
+            $this->deleteClient($importFormat);
 
             $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);
 
@@ -200,6 +197,15 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
         } catch (Exception $e) {
             $this->log(' --> Error : ' . $e->getMessage(), $importFormat);
         }
+    }
+
+    protected function deleteClient($importFormat)
+    {
+        //delete all element for the branch selected
+        $query = $this->em
+                ->createQuery('DELETE CreditUnionFrontendBundle:Client c WHERE c.branch = :branch')
+                ->setParameter('branch', $importFormat->getBranch()->getId());
+        $query->execute();
     }
 
     /**
