@@ -146,8 +146,8 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $highestColumnNumber = \PHPExcel_Cell::columnIndexFromString($highestColumn);
             $importFormatColumnNumber = count($importFormat->getMatchField());
 
-            if ($importFormatColumnNumber != $highestColumnNumber) {
-                $this->log('--> Error : Number of column in file doesn\'t match the import format created for this store, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
+            if ($importFormatColumnNumber >= $highestColumnNumber) {
+                $this->log('--> Error : Number of column in file doesn\'t match the import format created for this branch, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
                 return false;
             }
             
@@ -162,7 +162,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 if ($importFormat->getTitleDisplayed() && $row == 1) {
                     continue;
                 }
-                for ($col = 0; $col < $highestColumnIndex; ++$col) {
+                for ($col = 0; $col < $importFormatColumnNumber; ++$col) {
                     $cell = $worksheet->getCellByColumnAndRow($col, $row);
                     $val = $cell->getValue();
                     //$dataType = \PHPExcel_Cell_DataType::dataTypeForValue($val);
