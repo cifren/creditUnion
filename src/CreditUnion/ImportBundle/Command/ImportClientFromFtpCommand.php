@@ -306,7 +306,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $dateFile = date_create_from_format($extensionDateFormat, $explodedFileName[1]);
 
             if ($dateFile->format('Y-m-d') != date('Y-m-d')) {
-                system("rm $file");
+                unlink($file);
             }
         }
     }
