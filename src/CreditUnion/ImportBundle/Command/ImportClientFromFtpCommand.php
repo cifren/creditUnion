@@ -187,10 +187,11 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                     //$dataType = \PHPExcel_Cell_DataType::dataTypeForValue($val);
                     $colImport = $importFormat->getMatchField()[$col];
                     $type = $this->em->getClassMetadata('CreditUnionFrontendBundle:Client')->fieldMappings[$colImport]['type'];
-                    $val = $this->handlerType($importFormat, $type, $val);
+                    $val = $this->handlerType($importFormat, $this->em->getClassMetadata('CreditUnionFrontendBundle:Client')->fieldMappings[$colImport], $val);
 
                     $client->set($colImport, $val);
                 }
+                die();
                 $client->setBranch($branch);
                 $this->em->persist($client);
                 if ($this->debug) {
@@ -281,13 +282,17 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
         return $this->diffTime->format('%h Hours %i Minutes %s Seconds');
     }
 
-    protected function handlerType($importFormat, $type, $value)
+    protected function handlerType($importFormat, $mapping, $value)
     {
         $typeDate = array('date', 'datetime');
-        if (in_array($type, $typeDate)) {
+        if (in_array($mapping['type'], $typeDate)) {
             $value = \DateTime::createFromFormat($importFormat->getDateFormat(), $value);
             if ($value == false) {
                 $value = null;
+            }
+        } elseif ($mapping['type'] == 'string') {
+            if (isset($mapping['length'])) {
+                $value = substr($value, 0, $mapping['length'] - 1);
             }
         }
         return $value;
