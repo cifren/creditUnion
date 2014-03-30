@@ -42,6 +42,12 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
      */
     protected $debug;
 
+    /**
+     * archive folder name
+     * @var string 
+     */
+    protected $archiveFolder = 'archive';
+
     protected function configure()
     {
         $this
@@ -150,7 +156,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 $this->log('--> Error : Number of column in file doesn\'t match the import format created for this branch, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
                 return false;
             }
-            
+
             //delete list of client from the same branch and replace by new one
             $this->deleteClient($importFormat);
 
@@ -188,7 +194,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $this->log("--> $row Rows added with success", $importFormat);
 
             //create archive folder
-            $archiveFolder = $importFormat->getFolder() . '/archive';
+            $archiveFolder = $importFormat->getFolder() . DIRECTORY_SEPARATOR . $this->archiveFolder;
             $this->createArchiveFolder($archiveFolder);
 
             //archive folder
@@ -196,7 +202,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $archiveFileName = "{$archiveFolder}/{$pathParts['filename']}_{$today->format($extensionDateFormat)}.{$pathParts['extension']}";
             rename($inProcessFileName, $archiveFileName);
         } catch (Exception $e) {
-            $this->log(' --> Error : ' . $e->getMessage(), $importFormat);
+            $this->log('--> Fatal Error : ' . $e->getMessage(), $importFormat);
         }
     }
 
@@ -293,7 +299,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     }
 
     /**
-     * delete all files with extension .inProcess where date in filename is not today
+     * Archive all files with extension .inProcess where date in filename is more than 24h
      */
     protected function cleanFolder($folder, $extensionInProgress, $extensionDateFormat)
     {
@@ -304,9 +310,25 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $explodedFileName = array_reverse($explodedFileName);
 
             $dateFile = date_create_from_format($extensionDateFormat, $explodedFileName[1]);
+            $dateToday = new \DateTime(date("Y-m-d H:i:s"));
+            //file less than 24h
+            $diff = $dateToday->diff($dateFile);
 
-            if ($dateFile->format('Y-m-d') != date('Y-m-d')) {
-                unlink($file);
+            $hours = $diff->h;
+            $hours = $hours + ($diff->days * 24);
+            if ($hours > 24) {
+                //renaming
+                $archiveFileName['ext'] = $explodedFileName[2];
+                $archiveFileName['date'] = $explodedFileName[1];
+                $archiveFileName['filename'] = null;
+                for ($i = 3; $i <= count($explodedFileName)-1; $i++) {
+                    $archiveFileName['filename'] .= $explodedFileName[$i];
+                }
+                $fileName = $archiveFileName['filename'] . ".error." . $archiveFileName['date'] . '.' . $archiveFileName['ext'];
+                $archiveFileName = $pathParts['dirname']
+                        . DIRECTORY_SEPARATOR . $this->archiveFolder
+                        . DIRECTORY_SEPARATOR . '' . $fileName;
+                rename($file, $archiveFileName);
             }
         }
     }
@@ -327,7 +349,6 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     protected function handleError()
     {
         if (!$this->debug) {
-            var_dump('plop');
             //catch fatal error
             register_shutdown_function(array($this, 'handleShutdown'));
 
