@@ -191,7 +191,6 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
                     $client->set($colImport, $val);
                 }
-                die();
                 $client->setBranch($branch);
                 $this->em->persist($client);
                 if ($this->debug) {
