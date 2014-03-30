@@ -214,7 +214,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             //archive folder
             $this->renameProcessToArchive($latestFile, $inProcessFileName, $importFormat);
         } catch (Exception $e) {
-            $this->log('--> Fatal Error : ' . $e->getMessage(), $importFormat);
+            $this->logError($e, $importFormat);
         }
     }
 
@@ -391,9 +391,17 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     public function exception_error_handler($errno, $errstr, $errfile, $errline)
     {
         $e = new \ErrorException($errstr, $errno, 0, $errfile, $errline);
-        $this->log(' --> Error : ' . $e->getMessage());
+        $this->logError($e);
 
         return true;
+    }
+
+    protected function logError(\Exception $exception, $importFormat = null)
+    {
+        $this->log('--> Fatal Error : ' . $exception->getMessage()
+                . ' in file ' . $exception->getFile()
+                . ' line ' . $exception->getLine()
+                , $importFormat);
     }
 
     /**
@@ -406,7 +414,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             //fatal = type 1
             if ($error['type'] == 1) {
                 $e = new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']);
-                $this->log(' --> Error : ' . $e->getMessage());
+                $this->logError($e);
             }
         }
     }
