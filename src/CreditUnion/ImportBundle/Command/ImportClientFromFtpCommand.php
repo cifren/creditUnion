@@ -193,8 +193,13 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 }
                 $client->setBranch($branch);
                 $this->em->persist($client);
-                if ($row % 100 == 0) {
+                if ($this->debug) {
                     $this->em->flush();
+                }
+                if ($row % 100 == 0) {
+                    if (!$this->debug) {
+                        $this->em->flush();
+                    }
                     $this->em->clear();
                     //renew object for em
                     $branch = $this->em->getRepository('CreditUnionFrontendBundle:Branch')->find($branch->getId());
