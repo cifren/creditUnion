@@ -48,6 +48,16 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
      */
     protected $archiveFolder = 'archive';
 
+    /**
+     * date format for extension
+     */
+    protected $extensionDateFormat = 'Ymd-His';
+
+    /**
+     * progress extension in file name
+     */
+    protected $extensionInProgress = 'inProcess';
+
     protected function configure()
     {
         $this
@@ -111,9 +121,9 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 return;
             }
 
-            $extensionDateFormat = 'Ymd-His';
-            $extensionInProgress = 'inProcess';
-            $this->cleanFolder($importFormat->getFolder(), $extensionInProgress, $extensionDateFormat);
+            $this->extensionDateFormat = 'Ymd-His';
+            $this->extensionInProgress = 'inProcess';
+            $this->cleanFolder($importFormat->getFolder());
 
             $files = glob($importFormat->getFolder() . "/*.{xls,xlsx,csv}", GLOB_BRACE);
             $files = array_combine($files, array_map("filemtime", $files));
@@ -130,7 +140,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
             //process the file, need to change name in case of other script launched at the same time
             $today = new \DateTime('now');
-            $inProcessFileName = "{$latestFile}.{$idFile}.{$today->format($extensionDateFormat)}.{$extensionInProgress}";
+            $inProcessFileName = "{$latestFile}.{$idFile}.{$today->format($this->extensionDateFormat)}.{$this->extensionInProgress}";
             rename($latestFile, $inProcessFileName);
 
             //adapt in function of type csv or xls
@@ -152,8 +162,11 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $highestColumnNumber = \PHPExcel_Cell::columnIndexFromString($highestColumn);
             $importFormatColumnNumber = count($importFormat->getMatchField());
 
-            if ($importFormatColumnNumber >= $highestColumnNumber) {
+            if ($importFormatColumnNumber > $highestColumnNumber) {
                 $this->log('--> Error : Number of column in file doesn\'t match the import format created for this branch, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
+
+                //archive folder
+                $this->renameProcessToArchive($latestFile, $inProcessFileName, $importFormat);
                 return false;
             }
 
@@ -193,17 +206,23 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $this->log('--> Finished in ' . $this->getFinishTime(), $importFormat);
             $this->log("--> $row Rows added with success", $importFormat);
 
-            //create archive folder
-            $archiveFolder = $importFormat->getFolder() . DIRECTORY_SEPARATOR . $this->archiveFolder;
-            $this->createArchiveFolder($archiveFolder);
-
             //archive folder
-            $pathParts = pathinfo($latestFile);
-            $archiveFileName = "{$archiveFolder}/{$pathParts['filename']}_{$today->format($extensionDateFormat)}.{$pathParts['extension']}";
-            rename($inProcessFileName, $archiveFileName);
+            $this->renameProcessToArchive($latestFile, $inProcessFileName, $importFormat);
         } catch (Exception $e) {
             $this->log('--> Fatal Error : ' . $e->getMessage(), $importFormat);
         }
+    }
+
+    protected function renameProcessToArchive($file, $process, $importFormat)
+    {
+        //create archive folder
+        $archiveFolder = $importFormat->getFolder() . DIRECTORY_SEPARATOR . $this->archiveFolder;
+        $this->createArchiveFolder($archiveFolder);
+
+        $pathParts = pathinfo($file);
+        $today = new \DateTime('now');
+        $archiveFileName = "{$archiveFolder}/{$pathParts['filename']}_{$today->format($this->extensionDateFormat)}.{$pathParts['extension']}";
+        rename($process, $archiveFileName);
     }
 
     protected function deleteClient($importFormat)
@@ -301,15 +320,15 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     /**
      * Archive all files with extension .inProcess where date in filename is more than 24h
      */
-    protected function cleanFolder($folder, $extensionInProgress, $extensionDateFormat)
+    protected function cleanFolder($folder)
     {
-        $files = glob($folder . "/*.{$extensionInProgress}", GLOB_BRACE);
+        $files = glob($folder . "/*.{$this->extensionInProgress}", GLOB_BRACE);
         foreach ($files as $file) {
             $pathParts = pathinfo($file);
             $explodedFileName = explode('.', $pathParts['basename']);
             $explodedFileName = array_reverse($explodedFileName);
 
-            $dateFile = date_create_from_format($extensionDateFormat, $explodedFileName[1]);
+            $dateFile = date_create_from_format($this->extensionDateFormat, $explodedFileName[1]);
             $dateToday = new \DateTime(date("Y-m-d H:i:s"));
             //file less than 24h
             $diff = $dateToday->diff($dateFile);
@@ -321,7 +340,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 $archiveFileName['ext'] = $explodedFileName[2];
                 $archiveFileName['date'] = $explodedFileName[1];
                 $archiveFileName['filename'] = null;
-                for ($i = 3; $i <= count($explodedFileName)-1; $i++) {
+                for ($i = 3; $i <= count($explodedFileName) - 1; $i++) {
                     $archiveFileName['filename'] .= $explodedFileName[$i];
                 }
                 $fileName = $archiveFileName['filename'] . ".error." . $archiveFileName['date'] . '.' . $archiveFileName['ext'];
