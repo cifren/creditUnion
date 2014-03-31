@@ -1,6 +1,15 @@
 {% extends 'CreditUnionBackendBundle::layout.html.twig' %}
 
 
+{% block javascripts %}
+    {{parent()}}
+    {% javascripts
+        '@CreditUnionBackendBundle/Resources/public/js/importFormat_displayLog.js'
+    %}
+        <script src="{{ asset_url }}" type="text/javascript"></script>
+    {% endjavascripts  %}
+{% endblock %}
+
 {% block body -%}
 <div class="row">
     <div class="col-lg-12">

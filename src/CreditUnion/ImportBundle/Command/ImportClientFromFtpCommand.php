@@ -17,6 +17,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     protected $output;
     protected $em;
     protected $log;
+    protected $branch;
 
     /**
      * start time value
@@ -63,6 +64,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
         $this
                 ->setName('import:clientFromFtp')
                 ->setDescription('Import client data from ftp, can export csv or xls files')
+                ->addArgument('branch', InputArgument::REQUIRED, 'which branch?')
                 ->addArgument('debug', InputArgument::OPTIONAL, 'debug ? display issues')
         ;
     }
@@ -70,11 +72,17 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->debug = $input->getArgument('debug') == 'true' ? true : false;
+        $this->branch = preg_match('/^\d+$/', $input->getArgument('branch')) ? $input->getArgument('branch') : false;
         $this->handleError();
 
         $this->output = $output;
         $this->em = $this->getContainer()->get('doctrine')->getManager();
-        $branches = $this->getContainer()->get('doctrine')->getRepository('CreditUnionFrontendBundle:Branch')->findAll();
+        $repoBranch = $this->getContainer()->get('doctrine')->getRepository('CreditUnionFrontendBundle:Branch');
+        if ($this->branch) {
+            $branches = $repoBranch->findBy(array('id' => $this->branch));
+        } else {
+            $branches = $repoBranch->findAll();
+        }
 
         $this->log('****** Start import ******');
         $this->log('');

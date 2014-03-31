@@ -52,6 +52,7 @@
                             {% endif %}
                             {% if(entity.importFormat) %}
                                 <a class="btn btn-primary" href="{{ path('cr_backend_importformat_displaylog', { 'id': entity.getImportFormat().id }) }}">Log</a>
+                                <a class="btn btn-primary" href="{{ path('cr_backend_branch_runcommand', { 'id': entity.id }) }}">Run import</a>
                             {% endif %}
                         </td>
                     </tr>

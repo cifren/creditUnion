@@ -15,8 +15,7 @@ use CreditUnion\BackendBundle\Form\BranchType;
  *
  * @Route("/branch")
  */
-class BranchController extends Controller
-{
+class BranchController extends Controller {
 
     /**
      * Lists all Branch entities.
@@ -250,6 +249,29 @@ class BranchController extends Controller
                         ->add('submit', 'submit', array('label' => 'Delete'))
                         ->getForm()
         ;
+    }
+
+    /**
+     * import data from file
+     * 
+     * @Route("/runcommand/{id}", name="cr_backend_branch_runcommand")
+     * @Method("GET")
+     */
+    public function runImport($id)
+    {
+        $path = $this->get('kernel')->getRootDir();
+        $cmd = "php {$path}/console import:clientFromFtp $id";
+        $outputfile = "/tmp/plop";
+        echo "$cmd";
+
+        if (substr(php_uname(), 0, 7) == "Windows") {
+            pclose(popen("start /B " . $cmd. ' ^>"'.$outputfile. '"', "r"));
+        } else {
+            exec($cmd . " > {$outputfile}2 &");
+        }
+        
+        //die();
+        return $this->redirect($this->generateUrl('cr_backend_importformat_displaylog', array('id' => $id)));
     }
 
 }

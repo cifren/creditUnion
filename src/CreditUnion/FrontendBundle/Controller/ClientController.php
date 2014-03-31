@@ -100,7 +100,7 @@ class ClientController extends Controller
                 ->setParameter('id', $clientId)
                 ->getQuery()
                 ->getSingleResult(Query::HYDRATE_ARRAY);
-        //die(var_dump($client));
+        
         if($client['birthDate'] ){
             $client['birthDate'] = \date_format($client['birthDate'], 'Y-m-d');
         }
