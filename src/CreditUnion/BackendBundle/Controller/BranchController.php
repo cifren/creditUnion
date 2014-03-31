@@ -270,8 +270,8 @@ class BranchController extends Controller {
             exec($cmd . " > {$outputfile}2 &");
         }
         
-        //die();
-        return $this->redirect($this->generateUrl('cr_backend_importformat_displaylog', array('id' => $id)));
+        $branch = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
+        return $this->redirect($this->generateUrl('cr_backend_importformat_displaylog', array('id' => $branch->getImportFormat()->getId())));
     }
 
 }
