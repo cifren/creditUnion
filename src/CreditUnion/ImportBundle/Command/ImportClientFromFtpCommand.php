@@ -73,7 +73,6 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     {
         $this->debug = $input->getArgument('debug') == 'true' ? true : false;
         $this->branch = preg_match('/^\d+$/', $input->getArgument('branch')) ? $input->getArgument('branch') : false;
-        $this->handleError();
 
         $this->output = $output;
         $this->em = $this->getContainer()->get('doctrine')->getManager();
@@ -110,8 +109,6 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             $this->log('');
         }
         $this->log('****** End import ******');
-
-        //$output->writeln($text);
     }
 
     protected function importClient(ImportFormat $importFormat)
@@ -300,7 +297,6 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             if ($value == null && \PHPExcel_Shared_Date::isDateTime($cell)) {
                 $value = \PHPExcel_Shared_Date::ExcelToPHPObject($cell->getValue());
             }
-            var_dump($value);
         } elseif ($mapping['type'] == 'string') {
             if (isset($mapping['length'])) {
                 $value = substr($cell->getValue(), 0, $mapping['length'] - 1);
@@ -380,55 +376,5 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
         }
     }
 
-    /**
-     * declare error handler in command
-     *
-     * Need to handle issue because command from symfony2 doesnt use listener, only for http request
-     *
-     */
-    protected function handleError()
-    {
-        if (!$this->debug) {
-            //catch fatal error
-            register_shutdown_function(array($this, 'handleShutdown'));
-
-            //overide error to communicate with database
-            set_error_handler(array($this, "exception_error_handler"));
-        }
-    }
-
-    /**
-     * handle shutdown error from php and report them to the database
-     */
-    public function exception_error_handler($errno, $errstr, $errfile, $errline)
-    {
-        $e = new \ErrorException($errstr, $errno, 0, $errfile, $errline);
-        $this->logError($e);
-
-        return true;
-    }
-
-    protected function logError(\Exception $exception, $importFormat = null)
-    {
-        $this->log('--> Fatal Error : ' . $exception->getMessage()
-                . ' in file ' . $exception->getFile()
-                . ' line ' . $exception->getLine()
-                , $importFormat);
-    }
-
-    /**
-     * handle shutdown error from php and report them to the database
-     */
-    public function handleShutdown()
-    {
-        $error = error_get_last();
-        if ($error !== NULL) {
-            //fatal = type 1
-            if ($error['type'] == 1) {
-                $e = new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']);
-                $this->logError($e);
-            }
-        }
-    }
 
 }
