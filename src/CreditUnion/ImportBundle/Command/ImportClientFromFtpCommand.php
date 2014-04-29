@@ -90,10 +90,17 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
             $this->log('--------- Branch name : ' . $branch->getName() . ' ---------');
             if ($branch->getImportFormat()) {
-                $this->log('Script running...', $branch->getImportFormat());
-                $this->saveLog($branch->getImportFormat());
-                $this->clearLog();
-                $this->importClient($branch->getImportFormat());
+                $date = date('Y-m-d h:i:s');
+                if ($branch->getImportFormat()->getEnabled()) {
+                    $this->log("Script running at {$date}...", $branch->getImportFormat());
+
+                    $this->saveLog($branch->getImportFormat());
+                    $this->clearLog();
+                    $this->importClient($branch->getImportFormat());
+                } else {
+                    $this->log("{$date} Script disabled", $branch->getImportFormat());
+                }
+
                 $this->saveLog($branch->getImportFormat());
                 $this->clearLog();
             } else {
@@ -111,13 +118,6 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     {
         try {
 
-            if (!$importFormat->getEnabled()) {
-                $this->log(date('Y-m-d h:i:s'));
-                $this->log('--> This import is disabled');
-                return true;
-            } else {
-                $this->log(date('Y-m-d h:i:s'), $importFormat);
-            }
             $this->setStartTime();
 
             //reload branch because clear()
@@ -192,10 +192,8 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
                 for ($col = 0; $col < $importFormatColumnNumber; ++$col) {
                     $cell = $worksheet->getCellByColumnAndRow($col, $row);
                     $val = $cell->getValue();
-                    //$dataType = \PHPExcel_Cell_DataType::dataTypeForValue($val);
                     $colImport = $importFormat->getMatchField()[$col];
-                    $type = $this->em->getClassMetadata('CreditUnionFrontendBundle:Client')->fieldMappings[$colImport]['type'];
-                    $val = $this->handlerType($importFormat, $this->em->getClassMetadata('CreditUnionFrontendBundle:Client')->fieldMappings[$colImport], $val);
+                    $val = $this->handlerType($importFormat, $this->em->getClassMetadata('CreditUnionFrontendBundle:Client')->fieldMappings[$colImport], $cell);
 
                     $client->set($colImport, $val);
                 }
@@ -289,17 +287,23 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
         return $this->diffTime->format('%h Hours %i Minutes %s Seconds');
     }
 
-    protected function handlerType($importFormat, $mapping, $value)
+    protected function handlerType($importFormat, $mapping, $cell)
     {
+        $value = $cell->getValue();
         $typeDate = array('date', 'datetime');
         if (in_array($mapping['type'], $typeDate)) {
-            $value = \DateTime::createFromFormat($importFormat->getDateFormat(), $value);
+            $value = \DateTime::createFromFormat($importFormat->getDateFormat(), $cell->getValue());
             if ($value == false) {
                 $value = null;
             }
+            //if $value is still null, means maybe date has special format in excel
+            if ($value == null && \PHPExcel_Shared_Date::isDateTime($cell)) {
+                $value = \PHPExcel_Shared_Date::ExcelToPHPObject($cell->getValue());
+            }
+            var_dump($value);
         } elseif ($mapping['type'] == 'string') {
             if (isset($mapping['length'])) {
-                $value = substr($value, 0, $mapping['length'] - 1);
+                $value = substr($cell->getValue(), 0, $mapping['length'] - 1);
             }
         }
         return $value;
