@@ -57,7 +57,7 @@ doctrine:
         # path:     %database_path%
 
     orm:
-        auto_generate_proxy_classes: %kernel.debug%
+        auto_generate_proxy_classes: false
         auto_mapping: true
         
 
