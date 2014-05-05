@@ -27,7 +27,7 @@ class Branch
     protected $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Client", mappedBy="branch")
+     * @ORM\OneToMany(targetEntity="Client", mappedBy="branch", cascade={"all"})
      */
     protected $clients;
 
