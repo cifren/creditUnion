@@ -217,7 +217,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             //archive folder
             $this->renameProcessToArchive($latestFile, $inProcessFileName, $importFormat);
         } catch (\Exception $e) {
-            $this->logError($e, $importFormat);
+            $this->log("Error Fatal : {$e->getMessage()}" , $importFormat);
         }
     }
 
