@@ -71,6 +71,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
   protected function execute(InputInterface $input, OutputInterface $output)
   {
+    ini_set("memory_limit", -1);
     $this->debug = $input->getArgument('debug') == 'true' ? true : false;
     $this->branch = preg_match('/^\d+$/', $input->getArgument('branch')) ? $input->getArgument('branch') : false;
 
@@ -219,7 +220,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     } catch (\Exception $e) {
       $this->getContainer()->get('doctrine')->resetEntityManager();
       $this->em = $this->getContainer()->get('doctrine')->getManager();
-      if($this->debug){
+      if ($this->debug) {
         $this->log($e->getMessage());
       }
       $this->log("Error Fatal, something looks wrong", $importFormat);
