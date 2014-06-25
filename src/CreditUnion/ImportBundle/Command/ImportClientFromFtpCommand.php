@@ -89,7 +89,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
             $this->log('--------- Branch name : ' . $branch->getName() . ' ---------');
             if ($branch->getImportFormat()) {
-                $date = date('Y-m-d h:i:s');
+                $date = date('Y-m-d H:i:s');
                 if ($branch->getImportFormat()->getEnabled()) {
                     $this->log("Script running at {$date}...", $branch->getImportFormat());
 
@@ -216,7 +216,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
             //archive folder
             $this->renameProcessToArchive($latestFile, $inProcessFileName, $importFormat);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logError($e, $importFormat);
         }
     }
