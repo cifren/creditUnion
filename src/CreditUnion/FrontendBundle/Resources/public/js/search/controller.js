@@ -6,6 +6,7 @@ searchApp
             fininstitut: '',
             panNumber: '',
             accountNumber: '',
+            branch: '',
             query: '',
             advancedQuery: ''
           };
@@ -20,7 +21,8 @@ searchApp
                       + '&birthDate=' + search.birthDate
                       + '&fininstitut=' + search.fininstitut
                       + '&panNumber=' + search.panNumber
-                      + '&accountNumber=' + search.accountNumber;
+                      + '&accountNumber=' + search.accountNumber
+                      + '&branch=' + search.branch;
             }
           };
 
@@ -70,6 +72,9 @@ clientsControllers.controller('ClientListAdvCtrl', ['$scope', '$http', '$routePa
     if ($routeParams.accountNumber !== 'undefined' && $routeParams.accountNumber !== 'null') {
       $scope.search.accountNumber = $routeParams.accountNumber;
     }
+    if ($routeParams.branch !== 'undefined' && $routeParams.branch !== 'null') {
+      $scope.search.branch = $routeParams.branch;
+    }
     //share data with searchCtrl
     myShareModel.setAdvancedQuery();
 
@@ -88,8 +93,11 @@ clientsControllers.controller('ClientListAdvCtrl', ['$scope', '$http', '$routePa
     if ($routeParams.accountNumber === 'undefined') {
       $routeParams.accountNumber = '';
     }
+    if ($routeParams.branch === 'undefined') {
+      $routeParams.branch = '';
+    }
 
-    $http.get(Routing.generate('cr_frontend_client_list_adv', {'name': $routeParams.name, 'birthDate': $routeParams.birthDate, 'fininstitut': $routeParams.fininstitut, 'panNumber': $routeParams.panNumber, 'accountNumber': $routeParams.accountNumber}))
+    $http.get(Routing.generate('cr_frontend_client_list_adv', {'name': $routeParams.name, 'birthDate': $routeParams.birthDate, 'fininstitut': $routeParams.fininstitut, 'panNumber': $routeParams.panNumber, 'accountNumber': $routeParams.accountNumber, 'branch': $routeParams.branch}))
             .success(function(data) {
               $scope.clients = data;
             });
@@ -108,6 +116,7 @@ clientsControllers.controller('ClientDetailsAdvCtrl', ['$scope', '$http', '$rout
       fininstitut: $routeParams.fininstitut,
       panNumber: $routeParams.panNumber,
       accountNumber: $routeParams.accountNumber,
+      branch: $routeParams.branch,
     });
     $scope.searchType = 'advancedSearch';
   }]);

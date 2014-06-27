@@ -27,32 +27,6 @@ class ClientController extends Controller
     /**
      * JSON 
      * 
-     * @Route("/basicSearch/{searchText}", name="cr_frontend_client_list", defaults={"searchText"=null})
-     */
-    public function listAction($searchText)
-    {
-        $clients = array();
-        if ($searchText) {
-            $clients = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Client')->createQueryBuilder('c')
-                    ->select('c, b')
-                    ->innerJoin('c.fininstitut', 'b')
-                    ->where('c.name LIKE :searchText')
-                    ->orWhere('c.accountNumber LIKE :searchText')
-                    ->orWhere('c.panNumber LIKE :searchText')
-                    ->setParameter('searchText', '%' . $searchText . '%')
-                    ->setMaxResults(20)
-                    ->getQuery()
-                    ->getResult(Query::HYDRATE_ARRAY);
-        }
-
-        $response = new Response(json_encode($clients));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
-    }
-
-    /**
-     * JSON 
-     * 
      * @Route("/advancedSearch", name="cr_frontend_client_list_adv")
      */
     public function listAdvAction()
@@ -76,6 +50,9 @@ class ClientController extends Controller
         }
         if ($this->getRequest()->get('fininstitut') != '') {
             $clientsQb->andWhere('b.id = :fininstitut')->setParameter('fininstitut', $this->getRequest()->get('fininstitut'));
+        }
+        if ($this->getRequest()->get('branch') != '') {
+            $clientsQb->andWhere('c.branch LIKE :branch')->setParameter('branch', "%{$this->getRequest()->get('branch')}%");
         }
         $clients = $clientsQb
                         ->setMaxResults(20)

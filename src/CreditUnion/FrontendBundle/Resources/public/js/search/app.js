@@ -11,13 +11,13 @@ searchApp
           function($routeProvider) {
             $routeProvider.
                     //advanced search list
-                    when('/advancedSearch/clients/name=:name&birthDate=:birthDate&fininstitut=:fininstitut&panNumber=:panNumber&accountNumber=:accountNumber', {
+                    when('/advancedSearch/clients/name=:name&birthDate=:birthDate&fininstitut=:fininstitut&panNumber=:panNumber&accountNumber=:accountNumber&branch=:branch', {
                       name: 'advancedClientList',
                       templateUrl: Routing.generate('cr_frontend_client_template', {templateName: 'clientList.html.twig'}),
                       controller: 'ClientListAdvCtrl'
                     }).
                     //details client from advanced list
-                    when('/advancedSearch/clientDetail/:clientId/name=:name&birthDate=:birthDate&fininstitut=:fininstitut&panNumber=:panNumber&accountNumber=:accountNumber', {
+                    when('/advancedSearch/clientDetail/:clientId/name=:name&birthDate=:birthDate&fininstitut=:fininstitut&panNumber=:panNumber&accountNumber=:accountNumber&branch=:branch', {
                       templateUrl: Routing.generate('cr_frontend_client_template', {templateName: 'clientDetails.html.twig'}),
                       controller: 'ClientDetailsAdvCtrl'
                     }).
