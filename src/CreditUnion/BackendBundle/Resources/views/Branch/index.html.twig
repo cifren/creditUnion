@@ -3,17 +3,17 @@
 {% block body -%}
 <div class="row">
     <div class="col-lg-12">
-        <h1>Branch list</h1>
+        <h1>Financial institution list</h1>
         <ol class="breadcrumb">
             <li><i class="fa fa-dashboard"></i> Dashboard</li>
-            <li class="active"><i class="fa fa-table"></i> Branch List</li>
+            <li class="active"><i class="fa fa-table"></i> Financial institution List</li>
         </ol>
     </div>
 </div><!-- /.row -->
 
 <div class="row">
     <div class="col-lg-6">
-        {% for flashMessage in app.session.flashbag.get('branch_success') %} 
+        {% for flashMessage in app.session.flashbag.get('fininstitut_success') %} 
         <div class="alert alert-success"> 
                {{ flashMessage }} 
         </div> 
@@ -33,10 +33,10 @@
             <tbody>
                 {% for entity in entities %}
                     <tr>
-                        <td><a href="{{ path('cr_backend_branch_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                        <td><a href="{{ path('cr_backend_fininstitut_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
                         <td>
-                            <a class="btn btn-primary" href="{{ path('cr_backend_branch_show', { 'id': entity.id }) }}">Show</a>
-                            <a class="btn btn-primary" href="{{ path('cr_backend_branch_edit', { 'id': entity.id }) }}">Edit</a>
+                            <a class="btn btn-primary" href="{{ path('cr_backend_fininstitut_show', { 'id': entity.id }) }}">Show</a>
+                            <a class="btn btn-primary" href="{{ path('cr_backend_fininstitut_edit', { 'id': entity.id }) }}">Edit</a>
                             <a class="btn btn-primary" href="
                             {% if(entity.importFormat) %}
                                {{ path('cr_backend_importformat_edit', { 'id': entity.getImportFormat().getId() }) }}">
@@ -48,11 +48,11 @@
                                     {% endif %}
                                 </a>
                             {% else %}
-                               {{ path('cr_backend_importformat_create', { 'branchId': entity.getId() }) }}">New format</a>
+                               {{ path('cr_backend_importformat_create', { 'fininstitutId': entity.getId() }) }}">New format</a>
                             {% endif %}
                             {% if(entity.importFormat) %}
                                 <a class="btn btn-primary" href="{{ path('cr_backend_importformat_displaylog', { 'id': entity.getImportFormat().id }) }}">Log</a>
-                                <a class="btn btn-primary" href="{{ path('cr_backend_branch_runcommand', { 'id': entity.id }) }}">Run import</a>
+                                <a class="btn btn-primary" href="{{ path('cr_backend_fininstitut_runcommand', { 'id': entity.id }) }}">Run import</a>
                             {% endif %}
                         </td>
                     </tr>
@@ -64,7 +64,7 @@
 
 <div class="row">
     <div class="col-lg-6">
-        <a class="btn btn-primary" href="{{ path('cr_backend_branch_new') }}">
+        <a class="btn btn-primary" href="{{ path('cr_backend_fininstitut_new') }}">
             Create a new entry
         </a>
     </div>

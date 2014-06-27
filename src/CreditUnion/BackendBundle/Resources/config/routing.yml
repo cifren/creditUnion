@@ -6,8 +6,8 @@ cr_backend_user:
     resource:   "@CreditUnionBackendBundle/Controller/MyUserController.php"
     type:       annotation
     
-cr_backend_branch:
-    resource:   "@CreditUnionBackendBundle/Controller/BranchController.php"
+cr_backend_fininstitut:
+    resource:   "@CreditUnionBackendBundle/Controller/FininstitutController.php"
     type:       annotation
     
 cr_backend_importformat:

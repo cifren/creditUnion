@@ -72,10 +72,10 @@ class Client
     protected $birthDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Branch", inversedBy="clients")
-     * @ORM\JoinColumn(name="branch_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Fininstitut", inversedBy="clients")
+     * @ORM\JoinColumn(name="fininstitut_id", referencedColumnName="id", nullable=false)
      */
-    protected $branch;
+    protected $fininstitut;
 
     public function getId()
     {
@@ -122,9 +122,9 @@ class Client
         return $this->birthDate;
     }
 
-    public function getBranch()
+    public function getFininstitut()
     {
-        return $this->branch;
+        return $this->fininstitut;
     }
 
     public function setId($id)
@@ -172,9 +172,9 @@ class Client
         $this->birthDate = $birthDate;
     }
 
-    public function setBranch($branch)
+    public function setFininstitut($fininstitut)
     {
-        $this->branch = $branch;
+        $this->fininstitut = $fininstitut;
     }
 
     static public function getImportColumnNames()

@@ -7,20 +7,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use CreditUnion\FrontendBundle\Entity\Branch;
-use CreditUnion\BackendBundle\Form\BranchType;
+use CreditUnion\FrontendBundle\Entity\Fininstitut;
+use CreditUnion\BackendBundle\Form\FininstitutType;
 
 /**
- * Branch controller.
+ * Fininstitut controller.
  *
- * @Route("/branch")
+ * @Route("/fininstitut")
  */
-class BranchController extends Controller {
+class FininstitutController extends Controller {
 
     /**
-     * Lists all Branch entities.
+     * Lists all Fininstitut entities.
      *
-     * @Route("/", name="cr_backend_branch_index")
+     * @Route("/", name="cr_backend_fininstitut_index")
      * @Method("GET")
      * @Template()
      */
@@ -28,7 +28,7 @@ class BranchController extends Controller {
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('CreditUnionFrontendBundle:Branch')->findAll();
+        $entities = $em->getRepository('CreditUnionFrontendBundle:Fininstitut')->findAll();
 
         return array(
             'entities' => $entities,
@@ -36,15 +36,15 @@ class BranchController extends Controller {
     }
 
     /**
-     * Creates a new Branch entity.
+     * Creates a new Fininstitut entity.
      *
-     * @Route("/", name="cr_backend_branch_create")
+     * @Route("/", name="cr_backend_fininstitut_create")
      * @Method("POST")
-     * @Template("CreditUnionFrontendBundle:Branch:new.html.twig")
+     * @Template("CreditUnionFrontendBundle:Fininstitut:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $entity = new Branch();
+        $entity = new Fininstitut();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -53,7 +53,7 @@ class BranchController extends Controller {
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('cr_backend_branch_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('cr_backend_fininstitut_show', array('id' => $entity->getId())));
         }
 
         return array(
@@ -63,16 +63,16 @@ class BranchController extends Controller {
     }
 
     /**
-     * Creates a form to create a Branch entity.
+     * Creates a form to create a Fininstitut entity.
      *
-     * @param Branch $entity The entity
+     * @param Fininstitut $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Branch $entity)
+    private function createCreateForm(Fininstitut $entity)
     {
-        $form = $this->createForm(new BranchType(), $entity, array(
-            'action' => $this->generateUrl('cr_backend_branch_create'),
+        $form = $this->createForm(new FininstitutType(), $entity, array(
+            'action' => $this->generateUrl('cr_backend_fininstitut_create'),
             'method' => 'POST',
         ));
 
@@ -82,15 +82,15 @@ class BranchController extends Controller {
     }
 
     /**
-     * Displays a form to create a new Branch entity.
+     * Displays a form to create a new Fininstitut entity.
      *
-     * @Route("/new", name="cr_backend_branch_new")
+     * @Route("/new", name="cr_backend_fininstitut_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
-        $entity = new Branch();
+        $entity = new Fininstitut();
         $form = $this->createCreateForm($entity);
 
         return array(
@@ -100,9 +100,9 @@ class BranchController extends Controller {
     }
 
     /**
-     * Finds and displays a Branch entity.
+     * Finds and displays a Fininstitut entity.
      *
-     * @Route("/{id}", name="cr_backend_branch_show")
+     * @Route("/{id}", name="cr_backend_fininstitut_show")
      * @Method("GET")
      * @Template()
      */
@@ -110,10 +110,10 @@ class BranchController extends Controller {
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
+        $entity = $em->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Branch entity.');
+            throw $this->createNotFoundException('Unable to find Fininstitut entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -125,9 +125,9 @@ class BranchController extends Controller {
     }
 
     /**
-     * Displays a form to edit an existing Branch entity.
+     * Displays a form to edit an existing Fininstitut entity.
      *
-     * @Route("/{id}/edit", name="cr_backend_branch_edit")
+     * @Route("/{id}/edit", name="cr_backend_fininstitut_edit")
      * @Method("GET")
      * @Template()
      */
@@ -135,10 +135,10 @@ class BranchController extends Controller {
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
+        $entity = $em->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Branch entity.');
+            throw $this->createNotFoundException('Unable to find Fininstitut entity.');
         }
 
         $editForm = $this->createEditForm($entity);
@@ -152,16 +152,16 @@ class BranchController extends Controller {
     }
 
     /**
-     * Creates a form to edit a Branch entity.
+     * Creates a form to edit a Fininstitut entity.
      *
-     * @param Branch $entity The entity
+     * @param Fininstitut $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createEditForm(Branch $entity)
+    private function createEditForm(Fininstitut $entity)
     {
-        $form = $this->createForm(new BranchType(), $entity, array(
-            'action' => $this->generateUrl('cr_backend_branch_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new FininstitutType(), $entity, array(
+            'action' => $this->generateUrl('cr_backend_fininstitut_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -171,20 +171,20 @@ class BranchController extends Controller {
     }
 
     /**
-     * Edits an existing Branch entity.
+     * Edits an existing Fininstitut entity.
      *
-     * @Route("/{id}", name="cr_backend_branch_update")
+     * @Route("/{id}", name="cr_backend_fininstitut_update")
      * @Method("PUT")
-     * @Template("CreditUnionBackendBundle:Branch:edit.html.twig")
+     * @Template("CreditUnionBackendBundle:Fininstitut:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
+        $entity = $em->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Branch entity.');
+            throw $this->createNotFoundException('Unable to find Fininstitut entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -194,7 +194,7 @@ class BranchController extends Controller {
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('cr_backend_branch_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('cr_backend_fininstitut_edit', array('id' => $id)));
         }
 
         return array(
@@ -205,9 +205,9 @@ class BranchController extends Controller {
     }
 
     /**
-     * Deletes a Branch entity.
+     * Deletes a Fininstitut entity.
      *
-     * @Route("/{id}", name="cr_backend_branch_delete")
+     * @Route("/{id}", name="cr_backend_fininstitut_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -216,26 +216,26 @@ class BranchController extends Controller {
         $deleteForm->handleRequest($request);
 
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
+        $entity = $em->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($id);
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Branch entity.');
+            throw $this->createNotFoundException('Unable to find Fininstitut entity.');
         }
 
         if ($deleteForm->isValid()) {
             $em->remove($entity);
             $em->flush();
         } else {
-            return $this->render('CreditUnionBackendBundle:Branch:show.html.twig', array(
+            return $this->render('CreditUnionBackendBundle:Fininstitut:show.html.twig', array(
                         'entity' => $entity,
                         'delete_form' => $deleteForm->createView(),
             ));
         }
 
-        return $this->redirect($this->generateUrl('cr_backend_branch_index'));
+        return $this->redirect($this->generateUrl('cr_backend_fininstitut_index'));
     }
 
     /**
-     * Creates a form to delete a Branch entity by id.
+     * Creates a form to delete a Fininstitut entity by id.
      *
      * @param mixed $id The entity id
      *
@@ -244,7 +244,7 @@ class BranchController extends Controller {
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-                        ->setAction($this->generateUrl('cr_backend_branch_delete', array('id' => $id)))
+                        ->setAction($this->generateUrl('cr_backend_fininstitut_delete', array('id' => $id)))
                         ->setMethod('DELETE')
                         ->add('submit', 'submit', array('label' => 'Delete'))
                         ->getForm()
@@ -254,7 +254,7 @@ class BranchController extends Controller {
     /**
      * import data from file
      * 
-     * @Route("/runcommand/{id}", name="cr_backend_branch_runcommand")
+     * @Route("/runcommand/{id}", name="cr_backend_fininstitut_runcommand")
      * @Method("GET")
      */
     public function runImport($id)
@@ -270,8 +270,8 @@ class BranchController extends Controller {
             exec($cmd . " > {$outputfile}2 &");
         }
         sleep(2);
-        $branch = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Branch')->find($id);
-        return $this->redirect($this->generateUrl('cr_backend_importformat_displaylog', array('id' => $branch->getImportFormat()->getId())));
+        $fininstitut = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($id);
+        return $this->redirect($this->generateUrl('cr_backend_importformat_displaylog', array('id' => $fininstitut->getImportFormat()->getId())));
     }
 
 }

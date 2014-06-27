@@ -5,21 +5,21 @@ namespace CreditUnion\FrontendBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * CreditUnion\FrontendBundle\Repository\branchRepository
+ * CreditUnion\FrontendBundle\Repository\fininstitutRepository
  * 
  */
-class BranchRepository extends EntityRepository {
+class FininstitutRepository extends EntityRepository {
 
-    public function getBranchesWithClient()
+    public function getFininstitutesWithClient()
     {
-        $branches = $this->createQueryBuilder('b')
+        $fininstitutes = $this->createQueryBuilder('b')
                 ->join('b.clients', 'c')
                 ->where('c.id IS NOT NULL')
                 ->orderBy('c.name', 'desc')
                 ->getQuery()
                 ->getResult();
         
-        return $branches;
+        return $fininstitutes;
     }
 
 }

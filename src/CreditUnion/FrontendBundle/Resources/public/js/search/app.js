@@ -22,13 +22,13 @@ searchApp
                       controller: 'ClientDetailsCtrl'
                     }).
                     //advanced search list
-                    when('/advancedSearch/clients/name=:name&birthDate=:birthDate&branch=:branch&panNumber=:panNumber&accountNumber=:accountNumber', {
+                    when('/advancedSearch/clients/name=:name&birthDate=:birthDate&fininstitut=:fininstitut&panNumber=:panNumber&accountNumber=:accountNumber', {
                       name: 'advancedClientList',
                       templateUrl: Routing.generate('cr_frontend_client_template', {templateName: 'clientList.html.twig'}),
                       controller: 'ClientListAdvCtrl'
                     }).
                     //details client from advanced list
-                    when('/advancedSearch/clientDetail/:clientId/name=:name&birthDate=:birthDate&branch=:branch&panNumber=:panNumber&accountNumber=:accountNumber', {
+                    when('/advancedSearch/clientDetail/:clientId/name=:name&birthDate=:birthDate&fininstitut=:fininstitut&panNumber=:panNumber&accountNumber=:accountNumber', {
                       templateUrl: Routing.generate('cr_frontend_client_template', {templateName: 'clientDetails.html.twig'}),
                       controller: 'ClientDetailsAdvCtrl'
                     }).

@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class BranchType extends AbstractType
+class FininstitutType extends AbstractType
 {
         /**
      * @param FormBuilderInterface $builder
@@ -26,7 +26,7 @@ class BranchType extends AbstractType
     {
         $resolver->setDefaults(array(
             'attr' => array('class' => 'table'),
-            'data_class' => 'CreditUnion\FrontendBundle\Entity\Branch'
+            'data_class' => 'CreditUnion\FrontendBundle\Entity\Fininstitut'
         ));
     }
 
@@ -35,6 +35,6 @@ class BranchType extends AbstractType
      */
     public function getName()
     {
-        return 'creditunion_frontendbundle_branch';
+        return 'creditunion_frontendbundle_fininstitut';
     }
 }

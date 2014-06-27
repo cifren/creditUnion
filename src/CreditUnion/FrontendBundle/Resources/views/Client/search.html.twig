@@ -55,12 +55,12 @@
 
               <div class="col-lg-5 well col-md-offset-1">
                 <div class="row">
-                  <label for="branch" class="col-lg-2 control-label">Branch</label>
+                  <label for="fininstitut" class="col-lg-2 control-label">Financial institution</label>
                   <div class="col-lg-10">
-                    <select id="branch" class="form-control" ng-model="search.branch">
-                      <option value="">Choose your branch</option>
-                      {% for branch in branches %}
-                        <option value="{{branch.getId()}}">{{branch.getName()|title}}</option>
+                    <select id="fininstitut" class="form-control" ng-model="search.fininstitut">
+                      <option value="">Choose your financial institution</option>
+                      {% for fininstitut in fininstitutes %}
+                        <option value="{{fininstitut.getId()}}">{{fininstitut.getName()|title}}</option>
                       {% endfor %}
                     </select> 
                   </div>

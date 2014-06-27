@@ -19,9 +19,9 @@ class ClientController extends Controller
     public function searchAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $branches = $em->getRepository('CreditUnionFrontendBundle:Branch')->getBranchesWithClient();
+        $fininstitutes = $em->getRepository('CreditUnionFrontendBundle:Fininstitut')->getFininstitutesWithClient();
         
-        return array('branches' => $branches);
+        return array('fininstitutes' => $fininstitutes);
     }
 
     /**
@@ -35,7 +35,7 @@ class ClientController extends Controller
         if ($searchText) {
             $clients = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Client')->createQueryBuilder('c')
                     ->select('c, b')
-                    ->innerJoin('c.branch', 'b')
+                    ->innerJoin('c.fininstitut', 'b')
                     ->where('c.name LIKE :searchText')
                     ->orWhere('c.accountNumber LIKE :searchText')
                     ->orWhere('c.panNumber LIKE :searchText')
@@ -61,7 +61,7 @@ class ClientController extends Controller
                 ->getRepository('CreditUnionFrontendBundle:Client')
                 ->createQueryBuilder('c')
                 ->select('c, b')
-                ->innerJoin('c.branch', 'b');
+                ->innerJoin('c.fininstitut', 'b');
         if ($this->getRequest()->get('name') != '') {
             $clientsQb->andWhere('c.name LIKE :name')->setParameter('name', '%' . $this->getRequest()->get('name') . '%');
         }
@@ -74,8 +74,8 @@ class ClientController extends Controller
         if ($this->getRequest()->get('accountNumber') != '') {
             $clientsQb->andWhere('c.accountNumber LIKE :accountNumber')->setParameter('accountNumber', '%' . $this->getRequest()->get('accountNumber') . '%');
         }
-        if ($this->getRequest()->get('branch') != '') {
-            $clientsQb->andWhere('b.id = :branch')->setParameter('branch', $this->getRequest()->get('branch'));
+        if ($this->getRequest()->get('fininstitut') != '') {
+            $clientsQb->andWhere('b.id = :fininstitut')->setParameter('fininstitut', $this->getRequest()->get('fininstitut'));
         }
         $clients = $clientsQb
                         ->setMaxResults(20)
@@ -95,7 +95,7 @@ class ClientController extends Controller
     {
         $client = $this->getDoctrine()->getRepository('CreditUnionFrontendBundle:Client')->createQueryBuilder('c')
                 ->select('c, b')
-                ->innerJoin('c.branch', 'b')
+                ->innerJoin('c.fininstitut', 'b')
                 ->where('c.id = :id')
                 ->setParameter('id', $clientId)
                 ->getQuery()

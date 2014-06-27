@@ -3,7 +3,7 @@ searchApp
           var search = {
             name: '',
             birthDate: '',
-            branch: '',
+            fininstitut: '',
             panNumber: '',
             accountNumber: '',
             query: '',
@@ -18,7 +18,7 @@ searchApp
               search.advancedQuery =
                   'name=' + search.name
                   + '&birthDate=' + search.birthDate
-                  + '&branch=' + search.branch
+                  + '&fininstitut=' + search.fininstitut
                   + '&panNumber=' + search.panNumber
                   + '&accountNumber=' + search.accountNumber;
             }
@@ -85,8 +85,8 @@ clientsControllers.controller('ClientListAdvCtrl', ['$scope', '$http', '$routePa
     if ($routeParams.birthDate !== 'undefined' && $routeParams.birthDate !== 'null' && $routeParams.birthDate !== '') {
       $scope.search.birthDate = $filter('date')(new Date($routeParams.birthDate.replace(/-/g, '/')), 'yyyy/MM/dd');
     }
-    if ($routeParams.branch !== 'undefined' && $routeParams.branch !== 'null') {
-      $scope.search.branch = $routeParams.branch;
+    if ($routeParams.fininstitut !== 'undefined' && $routeParams.fininstitut !== 'null') {
+      $scope.search.fininstitut = $routeParams.fininstitut;
     }
     if ($routeParams.panNumber !== 'undefined' && $routeParams.panNumber !== 'null') {
       $scope.search.panNumber = $routeParams.panNumber;
@@ -103,8 +103,8 @@ clientsControllers.controller('ClientListAdvCtrl', ['$scope', '$http', '$routePa
     if ($routeParams.birthDate === 'undefined' || $routeParams.birthDate === 'null') {
       $routeParams.birthDate = '';
     }
-    if ($routeParams.branch === 'undefined') {
-      $routeParams.branch = '';
+    if ($routeParams.fininstitut === 'undefined') {
+      $routeParams.fininstitut = '';
     }
     if ($routeParams.panNumber === 'undefined') {
       $routeParams.panNumber = '';
@@ -113,7 +113,7 @@ clientsControllers.controller('ClientListAdvCtrl', ['$scope', '$http', '$routePa
       $routeParams.accountNumber = '';
     }
 
-    $http.get(Routing.generate('cr_frontend_client_list_adv', {'name': $routeParams.name, 'birthDate': $routeParams.birthDate, 'branch': $routeParams.branch, 'panNumber': $routeParams.panNumber, 'accountNumber': $routeParams.accountNumber}))
+    $http.get(Routing.generate('cr_frontend_client_list_adv', {'name': $routeParams.name, 'birthDate': $routeParams.birthDate, 'fininstitut': $routeParams.fininstitut, 'panNumber': $routeParams.panNumber, 'accountNumber': $routeParams.accountNumber}))
             .success(function(data) {
               $scope.clients = data;
             });
@@ -138,7 +138,7 @@ clientsControllers.controller('ClientDetailsAdvCtrl', ['$scope', '$http', '$rout
     $scope.urlList = $rootScope.path('advancedClientList', {
       name: $routeParams.name,
       birthDate: $routeParams.birthDate,
-      branch: $routeParams.branch,
+      fininstitut: $routeParams.fininstitut,
       panNumber: $routeParams.panNumber,
       accountNumber: $routeParams.accountNumber,
     });

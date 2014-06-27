@@ -17,7 +17,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
   protected $output;
   protected $em;
   protected $log;
-  protected $branch;
+  protected $fininstitut;
 
   /**
    * start time value
@@ -64,7 +64,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     $this
             ->setName('import:clientFromFtp')
             ->setDescription('Import client data from ftp, can export csv or xls files')
-            ->addArgument('branch', InputArgument::REQUIRED, 'which branch?')
+            ->addArgument('fininstitut', InputArgument::REQUIRED, 'which fininstitut?')
             ->addArgument('debug', InputArgument::OPTIONAL, 'debug ? display issues')
     ;
   }
@@ -73,35 +73,35 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
   {
     ini_set("memory_limit", -1);
     $this->debug = $input->getArgument('debug') == 'true' ? true : false;
-    $this->branch = preg_match('/^\d+$/', $input->getArgument('branch')) ? $input->getArgument('branch') : false;
+    $this->fininstitut = preg_match('/^\d+$/', $input->getArgument('fininstitut')) ? $input->getArgument('fininstitut') : false;
 
     $this->output = $output;
     $this->em = $this->getContainer()->get('doctrine')->getManager();
-    $repoBranch = $this->getContainer()->get('doctrine')->getRepository('CreditUnionFrontendBundle:Branch');
-    if ($this->branch) {
-      $branches = $repoBranch->findBy(array('id' => $this->branch));
+    $repoFininstitut = $this->getContainer()->get('doctrine')->getRepository('CreditUnionFrontendBundle:Fininstitut');
+    if ($this->fininstitut) {
+      $fininstitutes = $repoFininstitut->findBy(array('id' => $this->fininstitut));
     } else {
-      $branches = $repoBranch->findAll();
+      $fininstitutes = $repoFininstitut->findAll();
     }
 
     $this->log('****** Start import ******');
     $this->log('');
-    foreach ($branches as $branch) {
+    foreach ($fininstitutes as $fininstitut) {
 
-      $this->log('--------- Branch name : ' . $branch->getName() . ' ---------');
-      if ($branch->getImportFormat()) {
+      $this->log('--------- Financial institution name : ' . $fininstitut->getName() . ' ---------');
+      if ($fininstitut->getImportFormat()) {
         $date = date('Y-m-d H:i:s');
-        if ($branch->getImportFormat()->getEnabled()) {
-          $this->log("Script running at {$date}...", $branch->getImportFormat());
+        if ($fininstitut->getImportFormat()->getEnabled()) {
+          $this->log("Script running at {$date}...", $fininstitut->getImportFormat());
 
-          $this->saveLog($branch->getImportFormat());
+          $this->saveLog($fininstitut->getImportFormat());
           $this->clearLog();
-          $this->importClient($branch->getImportFormat());
+          $this->importClient($fininstitut->getImportFormat());
         } else {
-          $this->log("{$date} Script disabled", $branch->getImportFormat());
+          $this->log("{$date} Script disabled", $fininstitut->getImportFormat());
         }
 
-        $this->saveLog($branch->getImportFormat());
+        $this->saveLog($fininstitut->getImportFormat());
         $this->clearLog();
       } else {
         $this->log('No import');
@@ -118,8 +118,8 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
       $this->setStartTime();
 
-      //reload branch because clear()
-      $branch = $this->em->getRepository('CreditUnionFrontendBundle:Branch')->find($importFormat->getBranch()->getId());
+      //reload fininstitut because clear()
+      $fininstitut = $this->em->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($importFormat->getFininstitut()->getId());
 
       //look for last file updated
       if (!file_exists($importFormat->getFolder())) {
@@ -169,14 +169,14 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
       $importFormatColumnNumber = count($importFormat->getMatchField());
 
       if ($importFormatColumnNumber > $highestColumnNumber) {
-        $this->log('--> Error : Number of column in file doesn\'t match the import format created for this branch, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
+        $this->log('--> Error : Number of column in file doesn\'t match the import format created for this fininstitut, in file ' . $highestColumnNumber . ' columns, in import format ' . $importFormatColumnNumber . ' columns', $importFormat);
 
         //archive folder
         $this->renameProcessToArchive($latestFile, $inProcessFileName, $importFormat);
         return false;
       }
 
-      //delete list of client from the same branch and replace by new one
+      //delete list of client from the same fininstitut and replace by new one
       $this->deleteClient($importFormat);
 
       $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);
@@ -195,7 +195,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
           $client->set($colImport, $val);
         }
-        $client->setBranch($branch);
+        $client->setFininstitut($fininstitut);
         $this->em->persist($client);
         if ($this->debug) {
           $this->em->flush();
@@ -206,7 +206,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
           }
           $this->em->clear();
           //renew object for em
-          $branch = $this->em->getRepository('CreditUnionFrontendBundle:Branch')->find($branch->getId());
+          $fininstitut = $this->em->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($fininstitut->getId());
         }
       }
       $this->em->flush();
@@ -241,10 +241,10 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
   protected function deleteClient($importFormat)
   {
-    //delete all element for the branch selected
+    //delete all element for the fininstitut selected
     $query = $this->em
-            ->createQuery('DELETE CreditUnionFrontendBundle:Client c WHERE c.branch = :branch')
-            ->setParameter('branch', $importFormat->getBranch()->getId());
+            ->createQuery('DELETE CreditUnionFrontendBundle:Client c WHERE c.fininstitut = :fininstitut')
+            ->setParameter('fininstitut', $importFormat->getFininstitut()->getId());
     $query->execute();
   }
 

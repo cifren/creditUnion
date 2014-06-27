@@ -37,17 +37,17 @@ class ImportFormatController extends Controller
     /**
      * Displays a form to create/edit an existing Importformat entity.
      *
-     * @Route("/create/{branchId}", name="cr_backend_importformat_create")
+     * @Route("/create/{fininstitutId}", name="cr_backend_importformat_create")
      */
-    public function createEditAction(Request $request, $branchId)
+    public function createEditAction(Request $request, $fininstitutId)
     {
         $entity = new ImportFormat();
         $entity->setDateFormat('d-M-Y');
         $entity->setDelimiterCsv(',');
 
         $em = $this->getDoctrine()->getManager();
-        $branch = $em->getRepository('CreditUnionFrontendBundle:Branch')->find($branchId);
-        $entity->setBranch($branch);
+        $fininstitut = $em->getRepository('CreditUnionFrontendBundle:Fininstitut')->find($fininstitutId);
+        $entity->setFininstitut($fininstitut);
 
         return $this->createAndEdit($request, $entity, 'create');
     }
@@ -167,7 +167,7 @@ class ImportFormatController extends Controller
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('cr_backend_branch_index'));
+        return $this->redirect($this->generateUrl('cr_backend_fininstitut_index'));
     }
 
     /**

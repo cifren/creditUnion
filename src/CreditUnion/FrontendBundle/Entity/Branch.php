@@ -5,12 +5,12 @@ namespace CreditUnion\FrontendBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CreditUnion\FrontendBundle\Entity\branch
+ * CreditUnion\FrontendBundle\Entity\fininstitut
  * 
- * @ORM\Entity(repositoryClass="CreditUnion\FrontendBundle\Repository\BranchRepository")
- * @ORM\Table(name="branch")
+ * @ORM\Entity(repositoryClass="CreditUnion\FrontendBundle\Repository\FininstitutRepository")
+ * @ORM\Table(name="fininstitut")
  */
-class Branch
+class Fininstitut
 {
 
     /**
@@ -27,12 +27,12 @@ class Branch
     protected $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Client", mappedBy="branch", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Client", mappedBy="fininstitut", cascade={"all"})
      */
     protected $clients;
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditUnion\BackendBundle\Entity\ImportFormat", mappedBy="branch", cascade={"all"})
+     * @ORM\OneToOne(targetEntity="CreditUnion\BackendBundle\Entity\ImportFormat", mappedBy="fininstitut", cascade={"all"})
      */
     protected $importFormat;
 

@@ -3,22 +3,22 @@
 {% block body -%}
 <div class="row">
     <div class="col-lg-12">
-        <h1>Branch edit</h1>
+        <h1>Financial institution edit</h1>
         <ol class="breadcrumb">
             <li><a href="{{path('cr_backend_admin_index')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li><a href="{{path('cr_backend_branch_index')}}"><i class="fa fa-dashboard"></i> Branch list</a></li>
-            <li class="active"><i class="fa fa-sitemap"></i> Branch edit</li>
+            <li><a href="{{path('cr_backend_fininstitut_index')}}"><i class="fa fa-dashboard"></i> Financial institution list</a></li>
+            <li class="active"><i class="fa fa-sitemap"></i> Financial institution edit</li>
         </ol>
     </div>
 </div><!-- /.row -->
 <div class="pull-right">
-    <form action="{{path('cr_backend_branch_delete', {id: entity.getId()})}}" method="post" style="display:inline-block;margin-left:10px;">
+    <form action="{{path('cr_backend_fininstitut_delete', {id: entity.getId()})}}" method="post" style="display:inline-block;margin-left:10px;">
         {{form_errors(delete_form)}}
         {{ form_widget(delete_form._token) }}
         <input type="hidden" value="DELETE" name="_method">
         <button class="btn btn-danger" name="form[submit]" id="form_submit" type="submit">Delete</button>
     </form>
-    <a class="btn btn-default" href="{{ path('cr_backend_branch_index') }}">
+    <a class="btn btn-default" href="{{ path('cr_backend_fininstitut_index') }}">
         Back to the list
     </a>
 </div>

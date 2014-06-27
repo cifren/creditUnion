@@ -4,7 +4,7 @@ namespace CreditUnion\FrontendBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class BranchControllerTest extends WebTestCase
+class FininstitutControllerTest extends WebTestCase
 {
     /*
     public function testCompleteScenario()
@@ -13,13 +13,13 @@ class BranchControllerTest extends WebTestCase
         $client = static::createClient();
 
         // Create a new entry in the database
-        $crawler = $client->request('GET', '/branch/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /branch/");
+        $crawler = $client->request('GET', '/fininstitut/');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /fininstitut/");
         $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
 
         // Fill in the form and submit it
         $form = $crawler->selectButton('Create')->form(array(
-            'creditunion_frontendbundle_branchtype[field_name]'  => 'Test',
+            'creditunion_frontendbundle_fininstituttype[field_name]'  => 'Test',
             // ... other fields to fill
         ));
 
@@ -33,7 +33,7 @@ class BranchControllerTest extends WebTestCase
         $crawler = $client->click($crawler->selectLink('Edit')->link());
 
         $form = $crawler->selectButton('Edit')->form(array(
-            'creditunion_frontendbundle_branchtype[field_name]'  => 'Foo',
+            'creditunion_frontendbundle_fininstituttype[field_name]'  => 'Foo',
             // ... other fields to fill
         ));
 

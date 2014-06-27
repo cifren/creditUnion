@@ -61,10 +61,10 @@ class ImportFormat
     protected $log;
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditUnion\FrontendBundle\Entity\Branch", inversedBy="importFormat")
-     * @ORM\JoinColumn(name="branch_id", referencedColumnName="id", nullable=false)
+     * @ORM\OneToOne(targetEntity="CreditUnion\FrontendBundle\Entity\Fininstitut", inversedBy="importFormat")
+     * @ORM\JoinColumn(name="fininstitut_id", referencedColumnName="id", nullable=false)
      */
-    protected $branch;
+    protected $fininstitut;
 
     public function getId()
     {
@@ -136,14 +136,14 @@ class ImportFormat
         $this->matchField = $matchField;
     }
 
-    public function getBranch()
+    public function getFininstitut()
     {
-        return $this->branch;
+        return $this->fininstitut;
     }
 
-    public function setBranch($branch)
+    public function setFininstitut($fininstitut)
     {
-        $this->branch = $branch;
+        $this->fininstitut = $fininstitut;
     }
 
     public function getDateFormat()
