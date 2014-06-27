@@ -193,6 +193,9 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
           $colImport = $importFormat->getMatchField()[$col];
           $val = $this->handlerType($importFormat, $this->em->getClassMetadata('CreditUnionFrontendBundle:Client')->fieldMappings[$colImport], $cell);
 
+          if ($colImport == 'birthDate') {
+            $val = $this->handleBirthDate($val, $importFormat->getDateFormat());
+          }
           $client->set($colImport, $val);
         }
         $client->setFininstitut($fininstitut);
@@ -288,6 +291,18 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     $this->setEndTime();
     $this->setFinishTime();
     return $this->diffTime->format('%h Hours %i Minutes %s Seconds');
+  }
+
+  protected function handleBirthDate($val, $format)
+  {
+    $dateToday = new \DateTime(date("Y-m-d"));
+    if (!$val) {
+      return $val;
+    }
+    if (strpos($format, 'y') !== false && $val->format('Ymd') >= $dateToday->format('Ymd')) {
+      $val->sub(new \DateInterval('P100Y'));
+    }
+    return $val;
   }
 
   protected function handlerType($importFormat, $mapping, $cell)
