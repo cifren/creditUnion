@@ -10,17 +10,6 @@ searchApp
         .config(['$routeProvider',
           function($routeProvider) {
             $routeProvider.
-                    //basic list
-                    when('/basicSearch/clients/:searchText', {
-                      name: 'basicClientList',
-                      templateUrl: Routing.generate('cr_frontend_client_template', {templateName: 'clientList.html.twig'}),
-                      controller: 'ClientListCtrl',
-                    }).
-                    //details client from basic list
-                    when('/basicSearch/clientDetail/:clientId/:searchText', {
-                      templateUrl: Routing.generate('cr_frontend_client_template', {templateName: 'clientDetails.html.twig'}),
-                      controller: 'ClientDetailsCtrl'
-                    }).
                     //advanced search list
                     when('/advancedSearch/clients/name=:name&birthDate=:birthDate&fininstitut=:fininstitut&panNumber=:panNumber&accountNumber=:accountNumber', {
                       name: 'advancedClientList',

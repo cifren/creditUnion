@@ -15,7 +15,7 @@ class FininstitutRepository extends EntityRepository {
         $fininstitutes = $this->createQueryBuilder('b')
                 ->join('b.clients', 'c')
                 ->where('c.id IS NOT NULL')
-                ->orderBy('c.name', 'desc')
+                ->orderBy('b.name', 'asc')
                 ->getQuery()
                 ->getResult();
         

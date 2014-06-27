@@ -14,13 +14,13 @@ searchApp
             getModel: function() {
               return search;
             },
-            setAdvancedQuery: function(){
+            setAdvancedQuery: function() {
               search.advancedQuery =
-                  'name=' + search.name
-                  + '&birthDate=' + search.birthDate
-                  + '&fininstitut=' + search.fininstitut
-                  + '&panNumber=' + search.panNumber
-                  + '&accountNumber=' + search.accountNumber;
+                      'name=' + search.name
+                      + '&birthDate=' + search.birthDate
+                      + '&fininstitut=' + search.fininstitut
+                      + '&panNumber=' + search.panNumber
+                      + '&accountNumber=' + search.accountNumber;
             }
           };
 
@@ -32,9 +32,6 @@ clientsControllers.controller('SearchListCtrl', ['$scope', '$location', '$timeou
   function SearchListCtrl($scope, $location, $timeout, $filter, myShareModel) {
     $scope.search = myShareModel.getModel();
 
-    $scope.updateClients = function() {
-      $location.path('/basicSearch/clients/' + $scope.search.query);
-    };
     $scope.updateAdvancedClients = function() {
       if (angular.isString($scope.search.birthDate) && $scope.search.birthDate !== '') {
         $scope.search.birthDate = new Date($scope.search.birthDate);
@@ -53,31 +50,10 @@ clientsControllers.controller('SearchListCtrl', ['$scope', '$location', '$timeou
     };
   }]);
 
-clientsControllers.controller('ClientListCtrl', ['$scope', '$http', '$routeParams', 'myShareModel',
-  function ClientListCtrl($scope, $http, $routeParams, myShareModel) {
-    $scope.search = myShareModel.getModel();
-    $scope.search.query = $routeParams.searchText;
-    $scope.display = true;
-    $scope.searchType = 'basicSearch';
-    if (!$scope.search.query || $scope.search.query === 'undefined') {
-      $scope.display = false;
-    } else {
-      $http.get(Routing.generate('cr_frontend_client_list', {searchText: $routeParams.searchText}))
-              .success(function(data) {
-                $scope.clients = data;
-              })
-              .error(function(data) {
-                $scope.display = false;
-              });
-    }
-    $scope.parentQuery = $scope.search.query;
-  }]);
-
 clientsControllers.controller('ClientListAdvCtrl', ['$scope', '$http', '$routeParams', 'myShareModel', '$filter',
   function ClientListAdvCtrl($scope, $http, $routeParams, myShareModel, $filter) {
     $scope.display = true;
     $scope.search = myShareModel.getModel();
-    $('#myTab #tabAdvanced').tab('show');
 
     if ($routeParams.name !== 'undefined' && $routeParams.name !== 'null') {
       $scope.search.name = $routeParams.name;
@@ -119,15 +95,6 @@ clientsControllers.controller('ClientListAdvCtrl', ['$scope', '$http', '$routePa
             });
     $scope.searchType = 'advancedSearch';
     $scope.parentQuery = $scope.search.advancedQuery;
-  }]);
-
-clientsControllers.controller('ClientDetailsCtrl', ['$scope', '$http', '$routeParams', '$rootScope',
-  function ClientDetailsCtrl($scope, $http, $routeParams, $rootScope) {
-    $http.get(Routing.generate('cr_frontend_client_getclient', {clientId: $routeParams.clientId})).success(function(data) {
-      $scope.client = data;
-    });
-    $scope.urlList = $rootScope.path('basicClientList', {searchText: $routeParams.searchText});
-    $scope.searchType = 'basicSearch';
   }]);
 
 clientsControllers.controller('ClientDetailsAdvCtrl', ['$scope', '$http', '$routeParams', '$rootScope',
