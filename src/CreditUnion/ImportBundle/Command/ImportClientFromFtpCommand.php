@@ -12,7 +12,8 @@ use CreditUnion\FrontendBundle\Entity\Client;
 /**
  * CreditUnion\BackendBundle\Command\ImportClientFromFtpCommand
  */
-class ImportClientFromFtpCommand extends ContainerAwareCommand {
+class ImportClientFromFtpCommand extends ContainerAwareCommand
+{
 
   protected $output;
   protected $em;
@@ -59,6 +60,11 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
    */
   protected $extensionInProgress = 'inProcess';
 
+  /**
+   * verbosity of the command
+   */
+  protected $verbosity;
+
   protected function configure()
   {
     $this
@@ -66,13 +72,18 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
             ->setDescription('Import client data from ftp, can export csv or xls files')
             ->addArgument('fininstitut', InputArgument::REQUIRED, 'which fininstitut?')
             ->addArgument('debug', InputArgument::OPTIONAL, 'debug ? display issues')
+            ->addArgument('debugLimit', InputArgument::OPTIONAL, 'debugLimit ? how many rows')
     ;
   }
 
   protected function execute(InputInterface $input, OutputInterface $output)
   {
     ini_set("memory_limit", -1);
+
+    $this->verbosity = $output->getVerbosity();
     $this->debug = $input->getArgument('debug') == 'true' ? true : false;
+    $this->debugLimit = $input->getArgument('debugLimit');
+
     $this->fininstitut = preg_match('/^\d+$/', $input->getArgument('fininstitut')) ? $input->getArgument('fininstitut') : false;
 
     $this->output = $output;
@@ -180,26 +191,48 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
       $this->deleteClient($importFormat);
 
       $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);
-
+      if($highestColumnIndex != $importFormatColumnNumber){
+        $this->log("WARNING : The file columns count is: $highestColumnIndex, the exported columns count is $importFormatColumnNumber");
+      }
+      
+      //rows
       for ($row = 1; $row <= $highestRow; ++$row) {
         $client = new Client();
         //if title in file, it will escape from import
         if ($importFormat->getTitleDisplayed() && $row == 1) {
           continue;
         }
+
+        //columns
         for ($col = 0; $col < $importFormatColumnNumber; ++$col) {
           $cell = $worksheet->getCellByColumnAndRow($col, $row);
           $val = $cell->getValue();
           $colImport = $importFormat->getMatchField()[$col];
+
+          $this->logDebug("Column: $colImport, value from file: $val, coordinate: {$cell->getCoordinate()}");
           $val = $this->handlerType($importFormat, $this->em->getClassMetadata('CreditUnionFrontendBundle:Client')->fieldMappings[$colImport], $cell);
 
           if ($colImport == 'birthDate') {
             $val = $this->handleBirthDate($val, $importFormat->getDateFormat());
           }
+
+          try {
+            $debugValue = var_export($val, true);
+            $this->logDebug("Final value: $debugValue");
+          } catch (\Exception $e) {
+            $debugValue = var_export($val, true);
+            $this->log("Final value: $debugValue");
+          }
           $client->set($colImport, $val);
         }
+
         $client->setFininstitut($fininstitut);
         $this->em->persist($client);
+
+        if ($this->debugLimit == $row) {
+          break;
+        }
+
         if ($this->debug) {
           $this->em->flush();
         }
@@ -326,6 +359,13 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     return $value;
   }
 
+  protected function logDebug($message)
+  {
+    if ($this->verbosity == OutputInterface::VERBOSITY_VERY_VERBOSE) {
+      $this->output->writeln($message);
+    }
+  }
+
   protected function log($message, $importFormat = null)
   {
     $this->output->writeln($message);
@@ -373,15 +413,16 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
 
       $hours = $diff->h;
       $hours = $hours + ($diff->days * 24);
+      $archiveFileName = array();
       if ($hours > 24) {
         //renaming
-        $archiveFileName['ext'] = $explodedFileName[2];
+        $archiveFileName['extension'] = $explodedFileName[2];
         $archiveFileName['date'] = $explodedFileName[1];
         $archiveFileName['filename'] = null;
         for ($i = 3; $i <= count($explodedFileName) - 1; $i++) {
           $archiveFileName['filename'] .= $explodedFileName[$i];
         }
-        $fileName = $archiveFileName['filename'] . ".error." . $archiveFileName['date'] . '.' . $archiveFileName['ext'];
+        $fileName = $archiveFileName['filename'] . ".error." . $archiveFileName['date'] . '.' . $archiveFileName['extension'];
         $archiveFileName = $pathParts['dirname']
                 . DIRECTORY_SEPARATOR . $this->archiveFolder
                 . DIRECTORY_SEPARATOR . '' . $fileName;
@@ -395,6 +436,11 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand {
     if (!file_exists($archiveFolder)) {
       mkdir("$archiveFolder");
     }
+  }
+
+  protected function getLogger()
+  {
+    return $this->getContainer()->get('logger');
   }
 
 }

@@ -87,12 +87,13 @@ class ImportFormatController extends Controller
 
         $defaultImportColumnNames = Client::getImportColumnNames();
         $importColumnNames = $this->createImportColumnNames($entity, $defaultImportColumnNames);
-
+        
         return $this->render('CreditUnionBackendBundle:ImportFormat:createAndEdit.html.twig', array(
                     'entity' => $entity,
                     'form' => $form->createView(),
                     'importColumnNames' => $importColumnNames,
-                    'type' => $type
+                    'type' => $type,
+                    'today' => new \DateTime('now')
         ));
     }
 
