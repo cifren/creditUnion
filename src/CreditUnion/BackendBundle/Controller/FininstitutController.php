@@ -162,7 +162,7 @@ class FininstitutController extends Controller {
     {
         $form = $this->createForm(new FininstitutType(), $entity, array(
             'action' => $this->generateUrl('cr_backend_fininstitut_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
+            'method' => 'POST',
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update', 'attr' => array('class' => 'btn btn-primary')));
@@ -173,8 +173,8 @@ class FininstitutController extends Controller {
     /**
      * Edits an existing Fininstitut entity.
      *
-     * @Route("/{id}", name="cr_backend_fininstitut_update")
-     * @Method("PUT")
+     * @Route("/update/{id}", name="cr_backend_fininstitut_update")
+     * @Method("POST")
      * @Template("CreditUnionBackendBundle:Fininstitut:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
@@ -207,8 +207,8 @@ class FininstitutController extends Controller {
     /**
      * Deletes a Fininstitut entity.
      *
-     * @Route("/{id}", name="cr_backend_fininstitut_delete")
-     * @Method("DELETE")
+     * @Route("/delete/{id}", name="cr_backend_fininstitut_delete")
+     * @Method("POST")
      */
     public function deleteAction(Request $request, $id)
     {
@@ -245,7 +245,6 @@ class FininstitutController extends Controller {
     {
         return $this->createFormBuilder()
                         ->setAction($this->generateUrl('cr_backend_fininstitut_delete', array('id' => $id)))
-                        ->setMethod('DELETE')
                         ->add('submit', 'submit', array('label' => 'Delete'))
                         ->getForm()
         ;
