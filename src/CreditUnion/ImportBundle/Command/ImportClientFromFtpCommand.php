@@ -191,10 +191,10 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
       $this->deleteClient($importFormat);
 
       $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);
-      if($highestColumnIndex != $importFormatColumnNumber){
+      if ($highestColumnIndex != $importFormatColumnNumber) {
         $this->log("WARNING : The file columns count is: $highestColumnIndex, the exported columns count is $importFormatColumnNumber");
       }
-      
+
       //rows
       for ($row = 1; $row <= $highestRow; ++$row) {
         $client = new Client();
@@ -338,7 +338,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
     return $val;
   }
 
-  protected function handlerType($importFormat, $mapping, $cell)
+  protected function handlerType($importFormat, $mapping, \PHPExcel_Cell $cell)
   {
     $value = $cell->getValue();
     $typeDate = array('date', 'datetime');
@@ -353,7 +353,7 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
       }
     } elseif ($mapping['type'] == 'string') {
       if (isset($mapping['length'])) {
-        $value = substr($cell->getValue(), 0, $mapping['length'] - 1);
+        $value = substr($cell->getFormattedValue(), 0, $mapping['length'] - 1);
       }
     }
     return $value;
