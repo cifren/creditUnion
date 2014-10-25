@@ -345,25 +345,39 @@ class ImportClientFromFtpCommand extends ContainerAwareCommand
         $value = $cell->getValue();
         $typeDate = array('date', 'datetime');
         if (in_array($mapping['type'], $typeDate)) {
-            $value = \DateTime::createFromFormat($importFormat->getDateFormat(), $cell->getValue());
+
+            try {
+                $value = \DateTime::createFromFormat($importFormat->getDateFormat(), $cell->getValue());
+            } catch (\Exception $e) {
+                $this->outputErrorOnValue($importFormat, $cell, $e);
+            }
             if ($value == false) {
                 $value = null;
             }
             //if $value is still null, means maybe date has special format in excel
             if ($value == null && \PHPExcel_Shared_Date::isDateTime($cell)) {
-                $value = \PHPExcel_Shared_Date::ExcelToPHPObject($cell->getValue());
+                try {
+                    $value = \PHPExcel_Shared_Date::ExcelToPHPObject($cell->getValue());
+                } catch (\Exception $e) {
+                    $this->outputErrorOnValue($importFormat, $cell, $e);
+                }
             }
         } elseif ($mapping['type'] == 'string') {
             if (isset($mapping['length'])) {
                 try {
                     $value = substr($cell->getFormattedValue(), 0, $mapping['length'] - 1);
                 } catch (\Exception $e) {
-                    $this->log("An error happened on cell {$cell->getCoordinate()}, check the data", $importFormat);
-                    $this->log($e->getMessage(), $importFormat);
+                    $this->outputErrorOnValue($importFormat, $cell, $e);
                 }
             }
         }
         return $value;
+    }
+
+    protected function outputErrorOnValue($importFormat, \PHPExcel_Cell $cell, \Exception $e)
+    {
+        $this->log("An error happened on cell {$cell->getCoordinate()}, check the data", $importFormat);
+        $this->log($e->getMessage(), $importFormat);
     }
 
     protected function logDebug($message)
